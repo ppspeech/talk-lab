@@ -1230,7 +1230,7 @@ function renderMain(){
   renderBar();
   const m=$("main");
   if(S.mode==="loading"){ m.innerHTML=`<div class="panel"><p class="muted">Loading your clients…</p></div>`; return; }
-  const banner = S.mode==="mem" ? `<div class="banner" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span style="flex:1;min-width:220px">This is the public copy, so nothing saves here. Open your main Talk Lab to see your clients.</span><a class="btn primary small" href="https://claude.ai/artifact/AmzsLjh4QL3KbAatCHyjKz" target="_blank" rel="noopener">Open Talk Lab</a></div>` : "";
+  const banner = "";
   if(!S.client){ m.innerHTML = banner + viewClients(); return; }
   m.innerHTML = banner + ({assess:viewAssess, plan:viewPlan, pmv:viewPMV, session:viewSession, history:viewHistory, home:viewFamily}[S.tab])() + (S.fx&&S.fx.mm?`<div class="mm-ov" data-act="mmclosebg">${mouthMapHTML()}</div>`:"");
 }
