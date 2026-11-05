@@ -2,6 +2,8 @@
 <html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Speech practice</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23b5543a%22/%3E%3Cpath%20d%3D%22M14%2016h36a6%206%200%200%201%206%206v18a6%206%200%200%201-6%206H30l-10%208v-8h-6a6%206%200%200%201-6-6V22a6%206%200%200%201%206-6Z%22%20fill%3D%22%23fff6e9%22/%3E%3Cpath%20d%3D%22M20%2031c4-6%208-6%2012-3%204-3%208-3%2012%203-4%206-20%206-24%200Z%22%20fill%3D%22%23e8746a%22/%3E%3Cpath%20d%3D%22M21%2031c5%201.5%2017%201.5%2022%200%22%20stroke%3D%22%23b5543a%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="speechgames.css">
+<script src="speechgames.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lexend:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -25,6 +27,16 @@ ul{margin:0;padding-left:18px;font-size:13px;line-height:1.5}
 .small{font-size:12px;color:#7a6c5a;text-align:center}
 .cheer{font-family:Fredoka,sans-serif;font-size:15px;margin-top:6px}
 .empty{padding:40px 10px;text-align:center}
+.c .hear{position:absolute;top:4px;left:6px;font-size:13px;opacity:.7}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gt{border:0;border-radius:14px;padding:10px 4px 8px;font:600 13px Lexend,sans-serif;color:#2a2116;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff}
+.gt span{font-size:34px;line-height:1}
+.mmw{position:relative;width:100px}.mmw svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.feel{margin-top:6px;border:0;border-radius:999px;padding:5px 12px;font:600 12px Lexend,sans-serif;background:#b5543a;color:#fff;cursor:pointer}
+.pf circle{animation:pf .9s ease-out forwards}@keyframes pf{to{transform:translate(0,40px) scale(1.6);opacity:0}}
+.nz circle{animation:nz .9s ease-out forwards}@keyframes nz{to{transform:translate(0,-26px);opacity:0}}
+.bz path{animation:bz .15s linear 8 alternate}@keyframes bz{to{transform:translateX(3px)}}
+@media (prefers-reduced-motion:reduce){.pf circle,.nz circle,.bz path{animation:none}}
 </style></head><body><main class="in" id="app"></main>
 <script>
 const MM={
@@ -61,19 +73,37 @@ function render(){
   app.innerHTML=`
   <div><h1>${esc(D.n)}'s speech practice 🚀</h1><div class="sub">From ${esc(D.c||"your speech pathologist")} · week of ${start.toLocaleDateString("en-AU",{day:"numeric",month:"short"})}</div></div>
   <section class="box b4"><div class="eb">This week</div><div class="days">${["M","T","W","T","F","S","S"].map((l,i)=>`<button class="d ${st.days.includes(i)?"on":""} ${i===todayIdx?"today":""}" data-day="${i}" aria-pressed="${st.days.includes(i)}"><i>${st.days.includes(i)?"⭐":"○"}</i>${l}</button>`).join("")}</div><div class="cheer">${cheer}</div></section>
-  ${(D.w||[]).length?`<section class="box b2"><div class="eb">Practice words · tap each one after you say it</div><div class="cards">${D.w.map(([w,e])=>`<button class="c ${st.done.includes(w)?"done":""}" data-w="${esc(w)}" aria-pressed="${st.done.includes(w)}"><span>${e||"✏️"}</span>${esc(w)}</button>`).join("")}</div></section>`:""}
+  ${(D.w||[]).length?`<section class="box b2"><div class="eb">Practice words · tap each one after you say it</div><div class="cards">${D.w.map(([w,e])=>`<button class="c ${st.done.includes(w)?"done":""}" data-w="${esc(w)}" aria-pressed="${st.done.includes(w)}"><span>${e||"✏️"}</span>${esc(w)}<i class="hear" data-say="${esc(w)}" role="button" aria-label="Hear ${esc(w)}">🔊</i></button>`).join("")}</div></section>`:""}
+  ${(D.w||[]).length&&window.SpeechGames?`<section class="box b3"><div class="eb">Play a game · say each word as it pops up</div><div class="games">${SpeechGames.games().map(g=>`<button class="gt" data-game="${g.id}" style="background:${g.bg||"#fff"}"><span>${g.art}</span>${esc(g.name)}</button>`).join("")}</div></section>`:""}
   ${sounds.length?`<section class="box b1"><div class="eb">How to make the sound</div>${sounds.map(k=>{ const s=MM[k],P=MM_PL[s.place],A=MM_AIR[s.air];
-    return `<div class="mm"><img src="${MM_IMG[s.place]}" alt="Mouth shape for ${esc(k)}"><div><b>/${esc(k)}/ · the ${esc(s.cue)}</b>${P[0]} ${esc(P[1])}: ${esc(P[2].charAt(0).toLowerCase()+P[2].slice(1))}<br>${s.voice?"🐝 Voice on: hand on throat, feel the buzz":"🤫 Voice off: whisper it, no buzz"}<br>${A[0]} ${esc(A[1])}</div></div>`; }).join("")}</section>`:""}
+    return `<div class="mm"><div class="mmw"><img src="${MM_IMG[s.place]}" alt="Mouth shape for ${esc(k)}"><svg viewBox="0 0 100 75" id="fx-${esc(k)}"></svg></div><div><b>/${esc(k)}/ · the ${esc(s.cue)}</b>${P[0]} ${esc(P[1])}: ${esc(P[2].charAt(0).toLowerCase()+P[2].slice(1))}<br>${s.voice?"🐝 Voice on: hand on throat, feel the buzz":"🤫 Voice off: whisper it, no buzz"}<br>${A[0]} ${esc(A[1])}<br><button class="feel" data-feel="${esc(k)}">Feel it ▶</button></div></div>`; }).join("")}</section>`:""}
   ${D.t?`<section class="box b3"><div class="eb">Note from ${esc(D.c||"your speech pathologist")}</div><div class="note">${esc(D.t)}</div></section>`:""}
   <section class="box" style="background:#fff"><div class="eb">Tips for home</div><ul>${TIPS.map(([h,b])=>`<li><b>${h}:</b> ${b}</li>`).join("")}</ul></section>
   <button class="btn" id="send">Send ${esc(D.c||"us")} an update 💬</button>
   <div class="small">Your ticks stay on this phone. Nothing is uploaded.</div>`;
 }
 function msg(){ const nd=st.days.length; return `${D.n} practised ${nd} day${nd===1?"":"s"} this week.`+(st.done.length?` Words done: ${st.done.join(", ")}.`:""); }
+function say(w){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(w); const vs=speechSynthesis.getVoices(); const v=vs.find(x=>x.lang==="en-AU")||vs.find(x=>/^en/.test(x.lang)); if(v) u.voice=v; u.lang=v?.lang||"en-AU"; u.rate=.8; speechSynthesis.speak(u); }catch(e){} }
+function feel(k){ const s=MM[k], el=document.getElementById("fx-"+k); if(!el) return; let h="";
+  const n=s.air==="puff"?8:s.air==="soft"?4:s.air==="nose"?0:10;
+  if(n) h+=`<g class="pf">${Array.from({length:n},(_,i)=>`<circle cx="${47+(i%3)*3}" cy="40" r="${s.air==="puff"?3:2}" fill="#8fc3e0" style="animation-delay:${i*.07}s"/>`).join("")}</g>`;
+  if(s.air==="nose") h+=`<text x="2" y="16" font-size="12">👃</text><g class="nz"><circle cx="8" cy="12" r="2.5" fill="#8fc3e0"/><circle cx="13" cy="12" r="2.5" fill="#8fc3e0" style="animation-delay:.15s"/></g>`;
+  if(s.voice) h+=`<g class="bz" stroke="#b5543a" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M30 72 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0"/></g>`;
+  el.innerHTML=""; requestAnimationFrame(()=>{ el.innerHTML=h; }); }
+let GST={}; try{ GST=JSON.parse(localStorage.getItem("tl-home-games")||"{}"); }catch(e){}
+function openGame(id){ if(!window.SpeechGames) return; const pic=Object.fromEntries((D.w||[]).map(([w,e])=>[w,e]));
+  SpeechGames.open({items:D.w.map(([w])=>({key:w,text:w})), pic:w=>pic[w]||"", who:D.n, title:"Practice words", game:id, state:GST, say,
+    onSave:st=>{ GST=st; try{ localStorage.setItem("tl-home-games",JSON.stringify(st)); }catch(e){} },
+    onFinish:out=>{ const said=[...new Set(out.filter(t=>t.k!=="off").map(t=>t.text))]; if(out.length){ const i=Math.floor((new Date().setHours(0,0,0,0)-monday(D.d||Date.now()))/864e5); if(i>=0&&i<7&&!st.days.includes(i)) st.days.push(i); }
+      said.forEach(w=>{ if(!st.done.includes(w)) st.done.push(w); }); save(); render(); } }); }
 document.addEventListener("click",async e=>{
+  const h=e.target.closest("[data-say]"); if(h&&!e.target.closest(".sgk")){ e.stopPropagation(); say(h.dataset.say); return; }
+  if(e.target.closest(".sgk")) return;
   const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.day!=null){ const i=+b.dataset.day; st.days=st.days.includes(i)?st.days.filter(x=>x!==i):[...st.days,i]; save(); render(); return; }
   if(b.dataset.w!=null){ const w=b.dataset.w; st.done=st.done.includes(w)?st.done.filter(x=>x!==w):[...st.done,w]; save(); render(); return; }
+  if(b.dataset.game){ openGame(b.dataset.game); return; }
+  if(b.dataset.feel){ feel(b.dataset.feel); return; }
   if(b.id==="send"){ const t=msg();
     if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(err){ if(err&&err.name==="AbortError") return; } }
     location.href = D.e ? `mailto:${encodeURIComponent(D.e)}?subject=${encodeURIComponent("Speech practice update")}&body=${encodeURIComponent(t)}` : `sms:?&body=${encodeURIComponent(t)}`; }
