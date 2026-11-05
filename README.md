@@ -12,3 +12,4 @@ CAS / motor speech session tracker (NDP3-based) by Pei-Pei Hsing, CPSP.
 Live: https://claude.ai/artifact/AmzsLjh4QL3KbAatCHyjKz
 
 Single-file app: open `index.html`.
+- `home.html`: parent homework page opened from "Send home as a link" (data travels in the link, ticks stay on the parent's phone)

@@ -2376,6 +2376,16 @@ function familyInner(d, forFile){
   </div>`;
   return `<div class="fam">${kid}${par}</div>`;
 }
+const HOME_URL="https://ppspeech.github.io/talk-lab/home.html", CLIN_NAME="Pei-Pei";
+function famLink(){ const d=familyData(), first=(d.c.name||"").replace(/^example:\s*/i,"").split(/\s+/)[0]||"Your child";
+  const o={n:first,c:CLIN_NAME,d:today(),w:d.words.slice(0,18).map(w=>[w,picOf(w)||""]),k:famSounds(d.gs),t:(d.c.homeNotes||"").trim()};
+  const b=btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  return HOME_URL+"#"+b; }
+function famLinkPanel(){ const u=famLink(), first=(S.client.name||"").replace(/^example:\s*/i,"").split(/\s+/)[0];
+  return `<div class="flink"><div><b>Send home as a link</b><div class="muted small">This week's words, sounds and your note, first name only. Parents tick practice days on their phone and can text you an update. Nothing is stored online.</div></div>
+    <input type="text" readonly value="${esc(u)}" id="flinkUrl" aria-label="Family link">
+    <div class="row"><button class="btn primary small" data-act="flcopy">Copy link</button><a class="btn small" href="sms:?&body=${encodeURIComponent(`Here's ${first}'s speech practice for this week: ${u}`)}">Text it</a><button class="btn small" data-act="flqr">Show QR code</button><a class="btn ghost small" href="${esc(u)}" target="_blank" rel="noopener">Preview</a></div>
+    <div id="flinkQr"></div></div>`; }
 function famSounds(gs){ const out=[];
   gs.forEach(g=>{ const m=String(g.target||"").match(/\/([a-z]{1,2})\//i); let k=m?m[1].toLowerCase():null;
     if(!k||!MM[k]){ const w=(g.stimuli||[]).find(x=>x.trim()); k=w?mmSoundFor(w):null; if(k&&!/^\s*\//.test(g.target||"")&&!m) k=null; }
@@ -2385,6 +2395,7 @@ function famMouth(d){ const ks=famSounds(d.gs); if(!ks.length) return "";
   return `<div class="fbox f4"><span class="eyebrow">How to make the sound</span>${ks.map(k=>{ const s=MM[k], P=MM_PL[s.place], A=MM_AIR[s.air];
     return `<div class="fmm"><img src="${MM_IMG[s.place]}" alt="Mouth shape for ${esc(k)}"><div><b class="fmm-k">/${esc(k)}/ · the ${esc(s.cue)}</b>
       <div>${P[0]} ${esc(P[1])}: ${esc(P[2].charAt(0).toLowerCase()+P[2].slice(1))}</div><div>${s.voice?"🐝 Voice on: hand on throat, feel the buzz":"🤫 Voice off: whisper it, no buzz"}</div><div>${A[0]} ${esc(A[1])}</div></div></div>`; }).join("")}</div>`; }
+const FLINK_CSS=`.flink{margin-top:10px;background:#f4e7c4;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}.flink input{width:100%;font-size:12px}#flinkQr{display:flex;justify-content:flex-start}#flinkQr img,#flinkQr canvas{background:#fff;padding:8px;border-radius:10px}`;
 const FAMILY_CSS=`.f4{background:#fbe9e2}.fmm{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;margin-top:8px;font-size:13px;line-height:1.45}.fmm img{width:110px;height:auto;background:#faf3df;border-radius:10px}.fmm-k{font-size:15px;display:block;margin-bottom:2px}
 .fam{display:grid;grid-template-columns:1.2fr 1fr;border-radius:14px;overflow:hidden;border:1px solid #e3d9c9}
 .fkid{background:#fff6e9;color:#2a2116;padding:20px;display:flex;flex-direction:column;gap:14px;font-family:"Fredoka","Lexend",system-ui,sans-serif}
@@ -2409,7 +2420,8 @@ const FAMILY_CSS=`.f4{background:#fbe9e2}.fmm{display:grid;grid-template-columns
 function viewFamily(){
   const c=S.client, d=familyData();
   return `<section class="panel">
-    <div class="panel-h"><h2>Family page</h2><div class="row"><button class="btn" data-act="copyhome">Copy text</button>${S.downloads?`<button class="btn" data-act="dlcards">Picture practice cards</button><button class="btn primary" data-act="dlhome">Download for family</button>`:""}</div></div>
+    <div class="panel-h"><h2>Family page</h2><div class="row"><button class="btn" data-act="copyhome">Copy text</button>${S.downloads?`<button class="btn" data-act="dlcards">Picture practice cards</button><button class="btn primary" data-act="dlhome">Download for family</button>`:""}<button class="btn" data-act="flink" aria-pressed="${!!S.ui?.flink}">🔗 Send home as a link</button></div></div>
+    ${S.ui?.flink?famLinkPanel():""}
     <p class="muted small" style="margin:0">Show this on your iPad at the end of a session, or download it to send home. Stars come from the last two sessions; "words I can say" are words at 80%+ over the last three.</p>
     <details><summary class="small" style="cursor:pointer;font-weight:700">Edit what families see</summary>
       <div class="col" style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
@@ -2418,7 +2430,7 @@ function viewFamily(){
       </div></details>
     <textarea id="copyFallback" rows="6" hidden readonly></textarea>
   </section>
-  <style>${FAMILY_CSS}</style><div id="sheetPreview">${familyInner(d)}</div>`;
+  <style>${FAMILY_CSS}${FLINK_CSS}</style><div id="sheetPreview">${familyInner(d)}</div>`;
 }
 function familyText(){
   const d=familyData(), first=(d.c.name||"").replace(/^example:\s*/i,"").split(/\s+/)[0];
@@ -3276,6 +3288,10 @@ document.addEventListener("click", async e=>{
   if(a==="gspeak"){ try{ const u=new SpeechSynthesisUtterance(b.dataset.v); const vs=speechSynthesis.getVoices(); const v=vs.find(x=>x.lang==="en-AU")||vs.find(x=>/^en/.test(x.lang)); if(v) u.voice=v; u.lang=v?.lang||"en-AU"; u.rate=.8; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} return; }
   if(a==="gcardskip"){ const GG=gstate(); GG.await=false; GG.tries=0; flushCel(); if(GG.type==="smoothie" && GG.smoothie?.pending) setTimeout(smoothieBlend,30); if(GG.type==="balloon" && GG.balloon?.pending) setTimeout(balloonDone,30); if(GG.type==="stars" && GG.stars?.pending) setTimeout(starsDone,30); if(GG.type==="barrel" && GG.barrel?.pending) setTimeout(barrelDone,30); if(GG.type==="pacer"&&GG.pacer?.pending) setTimeout(pacerDone,30); if(GG.type==="roll"&&GG.roll?.pending) setTimeout(rollDone,30); if(GG.type==="build"&&GG.build?.pending) setTimeout(buildDone,30); if(GG.type==="maze"&&GG.maze?.pending) setTimeout(mazeDone,30); const cur=fxCurrent(); if(cur){ S.fx.rep=99; fxPickNext(cur); S.fx.rep=0; } saveLive(); renderMain(); return; }
   if(a==="gbridge"){ openBridge(); return; }
+  if(a==="flink"){ S.ui ||= {}; S.ui.flink=!S.ui.flink; renderMain(); return; }
+  if(a==="flcopy"){ const u=famLink(); try{ await navigator.clipboard.writeText(u); toast("Link copied"); }catch(err){ const i=document.getElementById("flinkUrl"); if(i){ i.select(); try{ document.execCommand("copy"); toast("Link copied"); }catch(e2){ toast("Select the link and copy it"); } } } return; }
+  if(a==="flqr"){ const box=document.getElementById("flinkQr"); if(!box) return; const draw=()=>{ box.innerHTML=""; new QRCode(box,{text:famLink(),width:180,height:180,correctLevel:QRCode.CorrectLevel.L}); };
+    if(window.QRCode) draw(); else { const sc=document.createElement("script"); sc.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"; sc.onload=draw; sc.onerror=()=>toast("QR code couldn't load"); document.head.appendChild(sc); } return; }
   if(a==="mmopen"){ ensureFx(); const cur=fxCurrent(); S.fx.mm=true; S.fx.mmCmp=false; S.fx.mmK=mmSoundFor(cur?cur.g.stimuli[cur.si]:""); renderMain(); return; }
   if(a==="mmclose"){ S.fx.mm=false; renderMain(); return; }
   if(a==="mmclosebg"){ if(e.target===b){ S.fx.mm=false; renderMain(); } return; }
