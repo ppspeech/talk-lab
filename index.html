@@ -463,6 +463,32 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-dots.mini{gap:4px}.brp-dots.mini i{width:15px;height:15px;font-size:9px;border-width:1.5px}.brp-dots.mini i.nq{font-size:13px}
 .brp-reps{display:flex;align-items:center;gap:3px;background:#efe8dc;border-radius:12px;padding:3px;font-size:12px;color:#857a6e}.brp-reps span{padding:0 4px}
 .brp-reps button{border:0;background:transparent;border-radius:9px;padding:5px 9px;font-size:13px;font-weight:700;color:#6b5f55;cursor:pointer}.brp-reps button[aria-pressed=true]{background:#fff;color:#2a2116;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.brp-bridge{position:relative;height:62px;background:linear-gradient(#cfe8f7,#eaf6fc);overflow:hidden;flex:none}
+.bb-cl{position:absolute;bottom:0;width:58px;height:30px;background:#9cc77f;display:flex;align-items:flex-start;justify-content:center;font-size:20px;line-height:1}.bb-cl span{display:block}
+.bb-cl.l{left:0;border-radius:0 18px 0 0;padding-top:0}.bb-cl.r{right:0;border-radius:18px 0 0 0}
+.bb-cl.l{font-size:24px;align-items:flex-start;padding-top:0;margin-top:0}
+.bb-water{position:absolute;left:56px;right:56px;bottom:0;height:14px;background:repeating-linear-gradient(90deg,#7cc3e8 0 14px,#8ccdee 14px 28px);animation:bbw 3s linear infinite}@keyframes bbw{to{background-position:28px 0}}
+.bb-planks{position:absolute;left:56px;right:56px;bottom:16px;display:flex;gap:3px}
+.bb-planks i{flex:1;height:13px;border-radius:3px;background:rgba(225,212,189,.55);border:2px dashed #c8b89a}
+.bb-planks i.on{background:#c98b4f;border:2px solid #a96f3a;animation:brpdot .45s cubic-bezier(.2,1.6,.4,1)}.bb-planks i.nr{background:#e8b45a;border:2px solid #c9922f;animation:brpdot .45s cubic-bezier(.2,1.6,.4,1)}
+.bb-planks i.cur{border-color:#b5543a;background:rgba(246,223,211,.8);animation:bbcur 1.4s ease-in-out infinite}@keyframes bbcur{50%{opacity:.5}}
+.bb-walker{position:absolute;bottom:28px;transform:translateX(-50%);font-size:28px;line-height:1;transition:left .8s cubic-bezier(.3,1.3,.5,1)}
+.brp-bridge.fin .bb-walker{animation:bbhop .5s ease-in-out 3}@keyframes bbhop{50%{transform:translate(-50%,-10px)}}
+.brp-stage.scn-train{background:linear-gradient(#bfe6ff,#eef8ff 66%,#bfe0a8 66%,#a9d48f);border:0}
+.sc-track{position:absolute;left:3%;right:3%;top:69%;height:12px;background:repeating-linear-gradient(90deg,#8a6a4a 0 7px,transparent 7px 26px),linear-gradient(#6f6f6f,#6f6f6f) 0 4px/100% 3px no-repeat}
+.sc-cloud{position:absolute;font-size:34px;opacity:.85}
+.scn-train .brp-piece{top:24%;border:0;border-radius:18px;padding:12px 18px 18px;min-width:120px;box-shadow:0 5px 0 rgba(0,0,0,.14)}
+.scn-train .brp-piece::after{content:"";position:absolute;bottom:-16px;left:18px;right:18px;height:24px;background:radial-gradient(circle at 12px 12px,#3a3a3a 10px,#9a9a9a 10.5px 11px,transparent 11.5px),radial-gradient(circle at calc(100% - 12px) 12px,#3a3a3a 10px,#9a9a9a 10.5px 11px,transparent 11.5px)}
+.scn-train .brp-piece.a{background:#ffd66b;color:#5c3f00}.scn-train .brp-piece.a::before{content:"";position:absolute;right:-22px;top:58%;width:24px;height:8px;border-radius:4px;background:#555}
+.scn-train .brp-piece.b{background:#8fd0b0;color:#14523a}
+.scn-train .brp-say{color:#2f4f22}
+.brp-stage.scn-dusk{background:linear-gradient(#ffd9b8,#fff1e2 60%,#f3d9b4 60%,#ecca9a);border:0}
+.sc-sun{position:absolute;right:22%;top:6%;font-size:40px;opacity:.9}
+.scn-dusk .brp-trail .bg{stroke:#fff5e8;stroke-width:34;stroke-dasharray:none;opacity:.85}.scn-dusk .brp-trail .fg{stroke:#f29a4a;stroke-width:28}
+.scn-dusk .brp-hlab{color:#a5501f}.scn-dusk .brp-piece.b{background:#fff;border:0;box-shadow:0 4px 0 rgba(0,0,0,.08)}.scn-dusk .brp-say{color:#7a4a25}
+.brp-hold{background:linear-gradient(#ffcf6b,#f7a94a)!important;color:#5c3000!important;border:0!important;border-radius:999px!important;box-shadow:0 6px 0 #d78a2c;font-weight:900!important;font-size:21px!important;padding:18px!important}
+.brp-hold.on{transform:translateY(4px)!important;box-shadow:0 2px 0 #d78a2c}
+.brp-stage.river{background:linear-gradient(180deg,#bfe6ff 0 38%,#7cc3e8 38% 82%,#a9d48f 82%)!important;border:0}
 .brp-set{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:8px 14px;background:#fbf8f2;border-bottom:1px solid #e6dfd2}
 .brp-strip{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#fbf8f2;border-bottom:1px solid #e6dfd2}
 .brp-chips{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px}.brp-chips::-webkit-scrollbar{display:none}
@@ -2611,7 +2637,7 @@ function celebrate(html, ms=2600){ if(ms<2000) return; if(gstate().await){ (S.fx
 
 function gamePicker(){
   return `<div class="gpick"><div class="gpick-h"><b>Pick a game</b>${gstate().type?`<button class="btn small" data-act="gpickclose">Back to game</button>`:""}</div>
-    <div class="gpick-grid">${GAMES.map(g=>`<button class="gcard" data-act="gpick" data-v="${g.id}">${g.tag?`<span class="gtag">${g.tag}</span>`:""}<span class="gart" style="background:${g.bg}">${g.art}</span><span class="gname" style="color:${g.col}">${g.name}</span><span class="ghow">${g.how}</span></button>`).join("")}</div></div>`;
+    <div class="gpick-grid">${[...GAMES].sort((a,b)=>(b.id==="bridge")-(a.id==="bridge")).map(g=>`<button class="gcard" data-act="gpick" data-v="${g.id}">${g.tag?`<span class="gtag">${g.tag}</span>`:""}<span class="gart" style="background:${g.bg}">${g.art}</span><span class="gname" style="color:${g.col}">${g.name}</span><span class="ghow">${g.how}</span></button>`).join("")}</div></div>`;
 }
 
 /* --- Board game (Dino Dash) --- */
@@ -3605,19 +3631,19 @@ async function loadExample(){
   const canHiss=a=>/(s|z|f|v|m|n|l|r|h|sh|th|w|y|a|e|i|o|u)$/i.test(String(a||"").trim());
   function stageHTML(){ const {it}=cur(), P=parts(it), f=it.f;
     if(B.fin) return `<div class="brp-stage" id="brpStage"><div class="brp-fin"><div class="t">🏆</div><b>All done!</b><span>${B.goes} tries · ${B.list.length} word${B.list.length===1?"":"s"} × ${B.reps}</span><span style="margin-top:6px"><button class="brp-g" data-brp="restart">↻ Go again</button></span></div></div>`;
-    if(B.mode==="slide") return `<div class="brp-stage" id="brpStage">
+    if(B.mode==="slide") return `<div class="brp-stage scn-train" id="brpStage"><div class="sc-track"></div><div class="sc-cloud" style="left:12%;top:10%">☁️</div><div class="sc-cloud" style="left:70%;top:6%">☁️</div>
         <div class="brp-piece a" id="brpA" style="left:${B.x}%">${P.pa?`<span class="brp-pic">${P.pa}</span>`:""}<b>${E(P.A)}</b></div>
         <div class="brp-piece b" id="brpB">${P.pb?`<span class="brp-pic">${P.pb}</span>`:""}<b>${E(P.B)}</b></div>
         <div class="brp-res" id="brpRes" ${B.done?"":"hidden"}>${P.pw?`<span class="brp-pic big">${P.pw}</span>`:""}<b>${E(P.W)}</b></div>
         <div class="brp-say" id="brpSay">${B.done?"":E(P.A)+" + "+E(P.B)}</div></div>
-      <p class="brp-tip">${B.done?"":"Slide the first part across to join it up."}</p>`;
-    if(B.mode==="hiss") return `<div class="brp-stage" id="brpStage">
+      <p class="brp-tip">${B.done?"":"Push the carriage to hook them up! 🚂"}</p>`;
+    if(B.mode==="hiss") return `<div class="brp-stage scn-dusk" id="brpStage"><div class="sc-sun">🌅</div>
         <svg class="brp-trail" id="brpTrail" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path d="${trail().d}" class="bg"/><path d="${trail().d}" class="fg" id="brpPath"/></svg>
         <div class="brp-head" id="brpHead" style="left:4%;top:57.5%">${trail().h}</div><div class="brp-hlab" id="brpHlab">${E(P.A)}</div>
         <div class="brp-piece b dim" id="brpB" style="left:76%">${P.pb?`<span class="brp-pic">${P.pb}</span>`:""}<b>${E(P.B)}</b></div>
         <div class="brp-res" id="brpRes" ${B.done?"":"hidden"}>${P.pw?`<span class="brp-pic big">${P.pw}</span>`:""}<b>${E(P.W)}</b></div>
         <div class="brp-say" id="brpSay">${B.done?"":(P.hold??canHiss(P.A))?"Hold the button and keep the sound going…":"Hold it… then let go into the next word"}</div></div>
-      <button class="brp-hold" id="brpHold" ${B.done?"disabled":""}>${(P.hold??canHiss(P.A))?`Hold me: ${E(P.A)}${E(P.hl||String(P.A).slice(-1)).repeat(3)}…`:`Hold me: ${E(P.A)}… then let go`}</button>`;
+      <button class="brp-hold" id="brpHold" ${B.done?"disabled":""}>${(P.hold??canHiss(P.A))?`Hold me! ${spd()[1]} ${E(P.A)}${E(P.hl||String(P.A).slice(-1)).repeat(3)}…`:`Hold me! ${spd()[1]} ${E(P.A)}… then let go`}</button>`;
     return `<div class="brp-stage river" id="brpStage">
         <div class="brp-frog" id="brpFrog" style="left:${[4,22,48,74][B.step+1]}%">🐸</div>
         <div class="brp-bank">${P.pw?`<span class="brp-pic">${B.step>=2?P.pw:(P.pb||"🏁")}</span>`:"🏁"}</div>
@@ -3632,7 +3658,7 @@ async function loadExample(){
         <span class="brp-reps"><span>Hold speed</span>${SPEEDS.map(([k,e,l])=>`<button data-brp="spd" data-v="${k}" aria-pressed="${spd()[0]===k}">${e} ${l}</button>`).join("")}</span></div>`:""}
       <div class="brp-strip"><button class="brp-arw" data-brp="prev" ${B.i?"":"disabled"} aria-label="Previous word">‹</button><div class="brp-chips" id="brpChips">${B.list.map((x,i)=>{ const r=(B.res||{})[i]; const ok=r&&r.length?r.filter(v=>v===true).length:0;
           return `<button class="brp-chip ${i===B.i?"cur":""} ${r&&r.length>=B.reps?"done":""}" data-brp="go" data-v="${i}" aria-current="${i===B.i}"><span>${pic(x.it.B)||"🔤"}</span>${E(x.it.B)}${r&&r.length?`<i>${ok}/${r.length}</i>`:""}</button>`; }).join("")}</div><button class="brp-arw" data-brp="next" ${B.i<B.list.length-1?"":"disabled"} aria-label="Next word">›</button></div>
-      <div class="brp-prog" aria-hidden="true"><i style="width:${progPct()}%"></i><b>${B.fin?"🏆":"🏁"}</b></div>
+      ${bridgeHTML()}
       <div class="brp-main">${stageHTML()}${B.fin||B.reps<2?"":`<div class="brp-count"><span class="brp-dots">${dotsHTML()}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
       <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-ic" aria-label="Hear ${E(P.W)}">🔊</button><button data-brp="again" class="brp-ic" aria-label="Again">↻</button><span style="flex:1"></span>
         <button data-brp="nq" class="brp-ans no"><i>·</i>Not quite</button><button data-brp="near" class="brp-ans nr"><i>≈</i>Nearly</button><button data-brp="said" class="brp-ans ok"><i>★</i>Said it!</button></div>
@@ -3641,6 +3667,11 @@ async function loadExample(){
     const cc=document.querySelector("#brpChips .cur"); if(cc) cc.scrollIntoView({block:"nearest",inline:"center"});
     bind(); }
   function dotsHTML(){ const M={ok:["on","★"],near:["nr","≈"],no:["nq","·"]}; return Array.from({length:B.reps},(_,k)=>{ const v=(B.m||[])[k], m=k<B.r?M[v===true?"ok":v==="near"?"near":"no"]:null; return `<i class="${m?m[0]:""} ${k===B.r-1&&B.pop?"new":""}">${m?m[1]:""}</i>`; }).join(""); }
+  function bridgeHTML(){ const s0=Math.min(B.s0||0,B.i), n=B.list.length-s0, pct=progPct();
+    const pl=Array.from({length:n},(_,k)=>{ const i=s0+k, r=(B.res||{})[i]||[], full=r.length>=B.reps; const ok=r.filter(v=>v===true).length;
+      const cl=full?(ok*2>=r.length?"on":"nr"):i===B.i?"cur":""; return `<i class="${cl}"></i>`; }).join("");
+    return `<div class="brp-bridge ${B.fin?"fin":""}" aria-label="${pct}% of the bridge built"><div class="bb-cl l">🌳</div><div class="bb-cl r">🏁</div><div class="bb-water"></div><div class="bb-planks">${pl}</div>
+      <div class="bb-walker" style="left:calc(56px + (100% - 112px) * ${B.fin?1:pct/100})">${B.fin?"🙌":"🧒"}</div></div>`; }
   function progPct(){ const s0=Math.min(B.s0||0,B.i), tot=(B.list.length-s0)*B.reps; return B.fin?100:Math.min(100,Math.round(((B.i-s0)*B.reps+B.r)/tot*100)); }
   function finish(){ if(B.done) return; B.done=true; const st=document.getElementById("brpStage"); const res=document.getElementById("brpRes");
     ["brpA","brpB","brpTrail","brpHead","brpHlab"].forEach(id=>{ const e=document.getElementById(id); if(e) e.classList.add("gone"); });
