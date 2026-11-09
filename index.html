@@ -466,7 +466,7 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-prog{height:8px;background:#efe8dc;position:relative}.brp-prog i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#f2b632,#e0803c);border-radius:0 6px 6px 0;transition:width .5s cubic-bezier(.3,1.2,.5,1)}.brp-prog b{position:absolute;right:6px;top:-9px;font-size:18px}
 .brp-count{display:flex;align-items:center;gap:10px;font-weight:700;color:#5d5246;font-size:15px}
 .brp-dots{display:flex;gap:6px}.brp-dots i{width:22px;height:22px;border-radius:50%;background:#efe8dc;border:2px solid #ddd3c2;display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff}
-.brp-dots i.on{background:#f2b632;border-color:#e0a21e}.brp-dots i.nq{background:#e9dccb;border-color:#cbb89f;color:#8a7560;font-size:18px}.brp-dots i.new{animation:brpdot .5s cubic-bezier(.2,1.6,.4,1)}@keyframes brpdot{0%{transform:scale(.3)}100%{transform:none}}
+.brp-dots i.on{background:#4fae73;border-color:#3d9660}.brp-dots i.nr{background:#f2b632;border-color:#d99a1c;font-size:14px}.brp-dots i.nq{background:#ef9a85;border-color:#d97e68;font-size:18px}.brp-dots i.new{animation:brpdot .5s cubic-bezier(.2,1.6,.4,1)}@keyframes brpdot{0%{transform:scale(.3)}100%{transform:none}}
 .brp-fin{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}.brp-fin .t{font-size:80px;line-height:1;animation:brpdot .6s cubic-bezier(.2,1.6,.4,1)}.brp-fin b{font-size:28px;color:#2a2116}.brp-fin span{color:#857a6e;font-size:15px}
 .brp-cheer{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#fff4dc;border-radius:999px;padding:6px 14px;font-weight:800;color:#a8711a;font-size:16px;animation:brpdot .5s cubic-bezier(.2,1.6,.4,1);z-index:4;white-space:nowrap}
 .brp-hold.on{background:#cfe9db;transform:scale(.98)}.brp-hold:disabled{opacity:.5}
@@ -479,7 +479,7 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-foot{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid #e6dfd2;background:#fbf8f2;visibility:hidden}
 .brp-foot.show{visibility:visible}
 .brp-g{border:1.5px solid #ddd5c8;background:#fff;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;color:#6b5f55}
-.brp-nq{border:1.5px solid #ddd5c8;background:#fff;color:#8a7560;border-radius:999px;padding:10px 18px;font-size:15px;font-weight:700}
+.brp-nq.nr{color:#a8711a;border-color:#ecd6a6}.brp-nq{border:1.5px solid #ddd5c8;background:#fff;color:#8a7560;border-radius:999px;padding:10px 18px;font-size:15px;font-weight:700}
 .brp-ok{border:0;background:#cfe7ea;color:#1f5560;border-radius:999px;padding:10px 22px;font-size:15px;font-weight:700}
 .brp-cfx{position:absolute;width:0;height:0;pointer-events:none;z-index:3}.brp-cfx i{position:absolute;width:9px;height:6px;border-radius:2px;animation:brpC .85s ease-out forwards}
 @keyframes brpC{to{transform:translate(var(--x),var(--y)) rotate(320deg);opacity:0}}
@@ -3094,7 +3094,7 @@ function brItem(t,si){ const k=firstSound(t), vc=vcOptions(k);
   const sp=brSplit(t); if(!sp) return null; return {A:sp[0],B:sp[1],W:t,pa:"",pb:"",pw:picOf(t),f:[sp[0]+" + "+sp[1], sp[0]+"‑"+sp[1], t]}; }
 function openBridge(){ if(!window.brOpenList) return; const cur=fxCurrent(); const list=[]; let start=0;
   sessionGoals().forEach(g=>g.stimuli.forEach((w,si)=>{ const t=w.trim(); const it=brItem(t,si); if(!it) return; if(cur&&cur.g.id===g.id&&cur.si===si) start=list.length;
-    it.said=()=>{ logTrial(g,si,true); saveLive(); S.saved=null; }; it.miss=()=>{ logTrial(g,si,false); saveLive(); S.saved=null; }; list.push(it); }));
+    it.said=()=>{ logTrial(g,si,true); saveLive(); S.saved=null; }; it.miss=()=>{ logTrial(g,si,false); saveLive(); S.saved=null; }; it.near=()=>{ logTrial(g,si,false); const lg=lgFix(g), e=lg.log[lg.log.length-1]; if(e) e.near=true; saveLive(); S.saved=null; }; list.push(it); }));
   brOpenList(list,start); }
 function brSplit(t){ if(!t) return null; if(/\s/.test(t)){ const i=t.indexOf(" "); return [t.slice(0,i), t.slice(i+1)]; }
   let m=t.match(/^(y?[^aeiouy]*)([aeiouy].*)$/i); if(m&&m[1]) return [m[1],m[2]];
@@ -3600,7 +3600,6 @@ async function loadExample(){
         <div class="brp-piece b" id="brpB">${P.pb?`<span class="brp-pic">${P.pb}</span>`:""}<b>${E(P.B)}</b></div>
         <div class="brp-res" id="brpRes" ${B.done?"":"hidden"}>${P.pw?`<span class="brp-pic big">${P.pw}</span>`:""}<b>${E(P.W)}</b></div>
         <div class="brp-say" id="brpSay">${B.done?"":E(P.A)+" + "+E(P.B)}</div></div>
-      <div class="brp-steps">${f.map((x,i)=>`<button data-brp="auto" data-v="${i}">${E(x)}</button>`).join("")}</div>
       <p class="brp-tip">${B.done?"":"Slide the first part across to join it up."}</p>`;
     if(B.mode==="hiss") return `<div class="brp-stage" id="brpStage">
         <svg class="brp-trail" id="brpTrail" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path d="${trail().d}" class="bg"/><path d="${trail().d}" class="fg" id="brpPath"/></svg>
@@ -3620,14 +3619,14 @@ async function loadExample(){
       <div class="brp-top"><b>Bridge it</b><span class="brp-seg">${[["slide","Slide it in"],["hiss","Hold the sound"],["stones","Stepping stones"]].map(([v,l])=>`<button data-brp="mode" data-v="${v}" aria-pressed="${B.mode===v}">${l}</button>`).join("")}</span>
         <span class="brp-nav"><button data-brp="prev" ${B.i?"":"disabled"} aria-label="Previous">‹</button><span>${B.i+1}/${B.list.length}</span><button data-brp="next" ${B.i<B.list.length-1?"":"disabled"} aria-label="Next">›</button></span>
         <span class="brp-reps" title="Tries per word"><span>Reps</span>${[1,3,5,10].map(n=>`<button data-brp="reps" data-v="${n}" aria-pressed="${B.reps===n}">${n}</button>`).join("")}</span>
-        ${B.fin||B.reps<2?"":`<span class="brp-dots mini" title="${B.r} of ${B.reps} for this word">${Array.from({length:B.reps},(_,k)=>`<i class="${k<B.r?((B.m||[])[k]===false?"nq":"on"):""} ${k===B.r-1&&B.pop?"new":""}">${k<B.r?((B.m||[])[k]===false?"·":"★"):""}</i>`).join("")}</span>`}
         <span class="brp-goes">★ ${B.goes}</span><button class="brp-x" data-brp="close">Close</button></div>
       <div class="brp-prog" aria-hidden="true"><i style="width:${progPct()}%"></i><b>${B.fin?"🏆":"🏁"}</b></div>
-      <div class="brp-main">${stageHTML()}${""}${B.fin||B.reps<2?"":`<div class="brp-count" hidden><span class="brp-dots">${Array.from({length:B.reps},(_,k)=>`<i class="${k<B.r?((B.m||[])[k]===false?"nq":"on"):""} ${k===B.r-1&&B.pop?"new":""}">${k<B.r?((B.m||[])[k]===false?"·":"★"):""}</i>`).join("")}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
-      <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-g">🔊 ${E(P.W)}</button><span style="flex:1"></span><button data-brp="again" class="brp-g">↻ Again</button><button data-brp="nq" class="brp-nq">Not quite</button><button data-brp="said" class="brp-ok">✓ Said it</button></div>
+      <div class="brp-main">${stageHTML()}${B.fin||B.reps<2?"":`<div class="brp-count"><span class="brp-dots">${dotsHTML()}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
+      <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-g">🔊 ${E(P.W)}</button><span style="flex:1"></span><button data-brp="again" class="brp-g">↻ Again</button><button data-brp="nq" class="brp-nq">Not quite</button><button data-brp="near" class="brp-nq nr">≈ Nearly</button><button data-brp="said" class="brp-ok">✓ Said it</button></div>
     </div>`;
     B.pop=false; if(B.cheer){ const st=document.getElementById("brpStage"); if(st){ const c=document.createElement("div"); c.className="brp-cheer"; c.textContent=B.cheer; st.appendChild(c); setTimeout(()=>c.remove(),1800); } B.cheer=""; }
     bind(); }
+  function dotsHTML(){ const M={ok:["on","★"],near:["nr","≈"],no:["nq","·"]}; return Array.from({length:B.reps},(_,k)=>{ const v=(B.m||[])[k], m=k<B.r?M[v===true?"ok":v==="near"?"near":"no"]:null; return `<i class="${m?m[0]:""} ${k===B.r-1&&B.pop?"new":""}">${m?m[1]:""}</i>`; }).join(""); }
   function progPct(){ const s0=Math.min(B.s0||0,B.i), tot=(B.list.length-s0)*B.reps; return B.fin?100:Math.min(100,Math.round(((B.i-s0)*B.reps+B.r)/tot*100)); }
   function finish(){ if(B.done) return; B.done=true; const st=document.getElementById("brpStage"); const res=document.getElementById("brpRes");
     ["brpA","brpB","brpTrail","brpHead","brpHlab"].forEach(id=>{ const e=document.getElementById(id); if(e) e.classList.add("gone"); });
@@ -3672,12 +3671,12 @@ async function loadExample(){
     if(a==="restart"){ B.i=0; B.s0=0; B.m=[]; B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
     if(a==="again"){ B.tw=(B.tw||0)+1; reset(); draw(); return; }
     if(a==="hear"){ say(parts(cur().it).W); return; }
-    if(a==="said"||a==="nq"){ const ok=a==="said", {it}=cur(); try{ ok?(it.said&&it.said()):(it.miss&&it.miss()); }catch(e){} B.goes++; (B.m ||= []).push(ok); B.r++; B.pop=true; reset();
+    if(a==="said"||a==="nq"||a==="near"){ const ok=a==="said", {it}=cur(); try{ ok?(it.said&&it.said()):a==="near"?(it.near&&it.near()):(it.miss&&it.miss()); }catch(e){} B.goes++; (B.m ||= []).push(ok?true:a==="near"?"near":false); B.r++; B.pop=true; reset();
       const ms={10:"10 tries! 🔥",25:"25 tries! 🚀",50:"50 tries! 🌟",75:"75! Unstoppable 💪",100:"100 tries! 🏆"};
       if(B.r>=B.reps){ B.r=0; B.m=[]; if(B.i<B.list.length-1){ B.i++; B.cheer=ms[B.goes]||(B.reps>1?"Word done! ⭐":""); } else { B.fin=true; } }
-      else B.cheer=ms[B.goes]||(ok?"":"Good try! Again 💪");
+      else B.cheer=ms[B.goes]||(ok?"":a==="near"?"So close! ≈":"Good try! Again 💪");
       draw(); const st=document.getElementById("brpStage"); if(st&&(B.fin||B.cheer)) boom(st, st.clientWidth*.5, st.clientHeight*.35); return; }
-    if(a==="alt"){ const c=cur(); const it=c.it; const nw=Object.assign(brMake(it.B,it.k,v),{said:it.said,miss:it.miss}); c.it=nw; try{ S.client.vcPick=S.client.vcPick||{}; S.client.vcPick[it.k]=v; scheduleSave(); }catch(e){} reset(); draw(); return; }
+    if(a==="alt"){ const c=cur(); const it=c.it; const nw=Object.assign(brMake(it.B,it.k,v),{said:it.said,miss:it.miss,near:it.near}); c.it=nw; try{ S.client.vcPick=S.client.vcPick||{}; S.client.vcPick[it.k]=v; scheduleSave(); }catch(e){} reset(); draw(); return; }
     if(a==="auto"){ const i=+v; const ap=document.getElementById("brpA"); if(ap){ ap.style.transition="left .5s"; setTimeout(()=>{ if(ap) ap.style.transition=""; },520); } setX(i===0?4:i===1?44:57); return; }
     if(a==="stone"){ const i=+v; if(i!==B.step+1) return; B.step=i; draw(); if(i===2) setTimeout(()=>{ B.done=false; finish(); },420); return; }
   }
