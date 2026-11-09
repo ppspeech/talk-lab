@@ -459,7 +459,6 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.brp-trail path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .brp-trail .bg{stroke:#eef3ee;stroke-width:26;stroke-dasharray:2 16}.brp-trail .fg{stroke:#8cc9a5;stroke-width:24}
 .brp-head{position:absolute;transform:translate(-50%,-50%);font-size:clamp(30px,4.6vw,44px);line-height:1;transition:none;z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
-.brp-head.grab{transform:translate(-50%,-50%) scale(1.25)}.brp-head{cursor:grab;transition:transform .15s}
 .brp-head.gone,.brp-trail.gone{opacity:0;transition:opacity .35s}
 .brp-reps{display:flex;align-items:center;gap:3px;background:#efe8dc;border-radius:12px;padding:3px;font-size:12px;color:#857a6e}.brp-reps span{padding:0 4px}
 .brp-reps button{border:0;background:transparent;border-radius:9px;padding:5px 9px;font-size:13px;font-weight:700;color:#6b5f55;cursor:pointer}.brp-reps button[aria-pressed=true]{background:#fff;color:#2a2116;box-shadow:0 1px 2px rgba(0,0,0,.08)}
@@ -3607,7 +3606,7 @@ async function loadExample(){
         <div class="brp-head" id="brpHead" style="left:4%;top:57.5%">${trail().h}</div><div class="brp-hlab" id="brpHlab">${E(P.A)}</div>
         <div class="brp-piece b dim" id="brpB" style="left:76%">${P.pb?`<span class="brp-pic">${P.pb}</span>`:""}<b>${E(P.B)}</b></div>
         <div class="brp-res" id="brpRes" ${B.done?"":"hidden"}>${P.pw?`<span class="brp-pic big">${P.pw}</span>`:""}<b>${E(P.W)}</b></div>
-        <div class="brp-say" id="brpSay">${B.done?"":(P.hold??canHiss(P.A))?"Trace the path (or hold the button) and keep the sound going…":"Trace it or hold it… then let go into the next word"}</div></div>
+        <div class="brp-say" id="brpSay">${B.done?"":(P.hold??canHiss(P.A))?"Hold the button and keep the sound going…":"Hold it… then let go into the next word"}</div></div>
       <button class="brp-hold" id="brpHold" ${B.done?"disabled":""}>${(P.hold??canHiss(P.A))?`Hold me: ${E(P.A)}${E(P.hl||String(P.A).slice(-1)).repeat(3)}…`:`Hold me: ${E(P.A)}… then let go`}</button>`;
     return `<div class="brp-stage river" id="brpStage">
         <div class="brp-frog" id="brpFrog" style="left:${[4,22,48,74][B.step+1]}%">🐸</div>
@@ -3658,18 +3657,6 @@ async function loadExample(){
         zipEnd(); };
       const stretch=()=>{ lab.textContent=(P.hold??canHiss(P.A))?P.A+ch.repeat(Math.round(w/(ch.length>1?14:10))):P.A+" "+"·".repeat(Math.round(w/12)); };
       const zipEnd=()=>{ const b=document.getElementById("brpB"); if(b) b.classList.remove("dim"); const zip=setInterval(()=>{ w=Math.min(100,w+6); paint(); if(w>=100){ clearInterval(zip); head.classList.add("gone"); setTimeout(finish,200); } },16); };
-      /* Trace: drag the critter along the trail */
-      const stg=document.getElementById("brpStage"); let tr=false, samp=null, zipped=false;
-      const sample=()=>{ const r=stg.getBoundingClientRect(); samp=[]; for(let i=0;i<=200;i++){ const pt=path.getPointAtLength(L*i/200); samp.push([r.left+pt.x/1000*r.width, r.top+pt.y/400*r.height]); } };
-      if(stg && path){
-        stg.addEventListener("pointerdown",e=>{ if(B.done||t) return; sample(); const hi=Math.round(w*2), [hx,hy]=samp[hi]; if(Math.hypot(e.clientX-hx,e.clientY-hy)>70) { const s=document.getElementById("brpSay"); if(s) s.textContent="Put your finger on the "+(head.textContent||"critter")+"!"; return; }
-          e.preventDefault(); tr=true; try{ stg.setPointerCapture(e.pointerId); }catch(err){} head.classList.add("grab"); const s=document.getElementById("brpSay"); if(s) s.textContent=""; });
-        stg.addEventListener("pointermove",e=>{ if(!tr||B.done||zipped) return; e.preventDefault(); const cur0=Math.round(w*2); let best=-1, bd=1e9;
-          for(let i=cur0;i<=Math.min(200,cur0+24);i++){ const d=Math.hypot(e.clientX-samp[i][0],e.clientY-samp[i][1]); if(d<bd){ bd=d; best=i; } }
-          if(best>cur0 && bd<75){ w=best/2; paint(); stretch(); if(w>=94){ zipped=true; tr=false; head.classList.remove("grab"); zipEnd(); } } });
-        const up=()=>{ if(!tr) return; tr=false; head.classList.remove("grab"); if(!zipped && w>3){ const s=document.getElementById("brpSay"); if(s) s.textContent="Keep going! Finger back on the "+(head.textContent||"critter"); } };
-        stg.addEventListener("pointerup",up); stg.addEventListener("pointercancel",up);
-      }
       h.addEventListener("contextmenu",e=>e.preventDefault()); h.addEventListener("selectstart",e=>e.preventDefault()); h.addEventListener("touchstart",e=>e.preventDefault(),{passive:false}); h.addEventListener("pointerdown",start); h.addEventListener("pointerup",end); h.addEventListener("pointerleave",end); h.addEventListener("pointercancel",end); }
   }
   function reset(){ B.done=false; B.step=-1; B.x=4; }
