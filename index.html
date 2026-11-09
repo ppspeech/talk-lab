@@ -463,6 +463,13 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-dots.mini{gap:4px}.brp-dots.mini i{width:15px;height:15px;font-size:9px;border-width:1.5px}.brp-dots.mini i.nq{font-size:13px}
 .brp-reps{display:flex;align-items:center;gap:3px;background:#efe8dc;border-radius:12px;padding:3px;font-size:12px;color:#857a6e}.brp-reps span{padding:0 4px}
 .brp-reps button{border:0;background:transparent;border-radius:9px;padding:5px 9px;font-size:13px;font-weight:700;color:#6b5f55;cursor:pointer}.brp-reps button[aria-pressed=true]{background:#fff;color:#2a2116;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.brp-set{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:8px 14px;background:#fbf8f2;border-bottom:1px solid #e6dfd2}
+.brp-strip{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#fbf8f2;border-bottom:1px solid #e6dfd2}
+.brp-chips{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px}.brp-chips::-webkit-scrollbar{display:none}
+.brp-chip{flex:none;display:flex;align-items:center;gap:6px;border:1.5px solid #e6dfd2;background:#fff;border-radius:999px;padding:5px 12px 5px 8px;font-size:15px;font-weight:700;color:#5d5246;cursor:pointer}
+.brp-chip span{font-size:20px;line-height:1}.brp-chip i{font-style:normal;font-size:11px;font-weight:700;color:#3d9660;background:#e3f3e8;border-radius:999px;padding:1px 6px}
+.brp-chip.cur{border-color:#b5543a;background:#f6dfd3;color:#2a2116}.brp-chip.done{opacity:.75}
+.brp-arw{flex:none;width:40px;height:40px;border-radius:50%;border:1.5px solid #e6dfd2;background:#fff;font-size:22px;font-weight:700;color:#6b5f55;cursor:pointer}.brp-arw:disabled{opacity:.35}
 .brp-prog{height:8px;background:#efe8dc;position:relative}.brp-prog i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#f2b632,#e0803c);border-radius:0 6px 6px 0;transition:width .5s cubic-bezier(.3,1.2,.5,1)}.brp-prog b{position:absolute;right:6px;top:-9px;font-size:18px}
 .brp-count{display:flex;align-items:center;gap:10px;font-weight:700;color:#5d5246;font-size:15px}
 .brp-dots{display:flex;gap:6px}.brp-dots i{width:22px;height:22px;border-radius:50%;background:#efe8dc;border:2px solid #ddd3c2;display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff}
@@ -480,6 +487,12 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-foot.show{visibility:visible}
 .brp-g{border:1.5px solid #ddd5c8;background:#fff;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;color:#6b5f55}
 .brp-nq.nr{color:#a8711a;border-color:#ecd6a6}.brp-nq{border:1.5px solid #ddd5c8;background:#fff;color:#8a7560;border-radius:999px;padding:10px 18px;font-size:15px;font-weight:700}
+.brp-ic{flex:none;width:48px;height:48px;border-radius:50%;border:1.5px solid #e6dfd2;background:#fff;font-size:22px;color:#6b5f55;cursor:pointer}
+.brp-ans{flex:none;display:flex;align-items:center;gap:8px;white-space:nowrap;border:0;border-radius:18px;padding:12px 18px;font-size:17px;font-weight:800;cursor:pointer;transition:transform .08s;box-shadow:0 4px 0 var(--sh)}
+.brp-ans:active{transform:translateY(3px);box-shadow:0 1px 0 var(--sh)}
+.brp-ans i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.35);font-size:15px}
+.brp-ans.ok{background:#4fae73;color:#fff;--sh:#37874f;padding:14px 26px;font-size:20px}.brp-ans.nr{background:#f7c548;color:#5c3f00;--sh:#d39f1f}.brp-ans.no{background:#f4a491;color:#5a2416;--sh:#d47f6a}
+@media (max-width:620px){.brp-ans{padding:10px 12px;font-size:15px}.brp-ans.ok{padding:12px 16px;font-size:17px}.brp-ans i{display:none}.brp-ic{width:42px;height:42px}}
 .brp-ok{border:0;background:#cfe7ea;color:#1f5560;border-radius:999px;padding:10px 22px;font-size:15px;font-weight:700}
 .brp-cfx{position:absolute;width:0;height:0;pointer-events:none;z-index:3}.brp-cfx i{position:absolute;width:9px;height:6px;border-radius:2px;animation:brpC .85s ease-out forwards}
 @keyframes brpC{to{transform:translate(var(--x),var(--y)) rotate(320deg);opacity:0}}
@@ -3586,12 +3599,9 @@ async function loadExample(){
     for(let k=0;k<20;k++){ const e=document.createElement("i"), a=Math.random()*6.28, d=40+Math.random()*70; e.style.setProperty("--x",(Math.cos(a)*d).toFixed(0)+"px"); e.style.setProperty("--y",(Math.sin(a)*d).toFixed(0)+"px"); e.style.background=cs[k%5]; b.appendChild(e); } host.appendChild(b); setTimeout(()=>b.remove(),900); }
   function say(t){ try{ const u=new SpeechSynthesisUtterance(t); const v=speechSynthesis.getVoices().find(x=>x.lang==="en-AU"); if(v) u.voice=v; u.lang="en-AU"; u.rate=.8; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }
   const cur=()=>B.list[B.i];
-  const TRAILS=[["zig","🐝"],["wave","🐍"]];
-  function trail(){ const [k,h]=TRAILS[(B.i+(B.tw||0))%2]; let pts=[];
-    if(k==="zig"){ for(let i=0;i<=10;i++) pts.push([40+i*70, i===0?230:(i%2?160:300)]); pts[10][1]=230; }
-    else if(k==="wave"){ for(let i=0;i<=140;i++){ const t=i/140; pts.push([40+t*700, 230-70*Math.sin(t*Math.PI*6)*Math.min(1,t*6,(1-t)*6)]); } }
-    else { for(let i=0;i<=220;i++){ const t=i/220, a=t*Math.PI*2*5; const r=55*Math.min(1,t*8,(1-t)*8); pts.push([40+t*700-r*Math.sin(a), 230-r*(1-Math.cos(a))*0.9]); } }
-    return {d:"M"+pts.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" L"), h}; }
+  const SPEEDS=[["slow","🐢","Slow",0.016],["mid","🐇","Normal",0.028],["glide","🕊️","Glide",0.06]];
+  function spd(){ return SPEEDS.find(x=>x[0]===B.spd)||SPEEDS[1]; }
+  function trail(){ return {d:"M40 230 L740 230", h:spd()[1]}; }
   const canHiss=a=>/(s|z|f|v|m|n|l|r|h|sh|th|w|y|a|e|i|o|u)$/i.test(String(a||"").trim());
   function stageHTML(){ const {it}=cur(), P=parts(it), f=it.f;
     if(B.fin) return `<div class="brp-stage" id="brpStage"><div class="brp-fin"><div class="t">🏆</div><b>All done!</b><span>${B.goes} tries · ${B.list.length} word${B.list.length===1?"":"s"} × ${B.reps}</span><span style="margin-top:6px"><button class="brp-g" data-brp="restart">↻ Go again</button></span></div></div>`;
@@ -3617,14 +3627,18 @@ async function loadExample(){
   function draw(){ const o=document.getElementById("brp"); if(!o||!B) return; const {it}=cur(), P=parts(it);
     o.innerHTML=`<div class="brp-box">
       <div class="brp-top"><b>Bridge it</b><span class="brp-seg">${[["slide","Slide it in"],["hiss","Hold the sound"],["stones","Stepping stones"]].map(([v,l])=>`<button data-brp="mode" data-v="${v}" aria-pressed="${B.mode===v}">${l}</button>`).join("")}</span>
-        <span class="brp-nav"><button data-brp="prev" ${B.i?"":"disabled"} aria-label="Previous">‹</button><span>${B.i+1}/${B.list.length}</span><button data-brp="next" ${B.i<B.list.length-1?"":"disabled"} aria-label="Next">›</button></span>
-        <span class="brp-reps" title="Tries per word"><span>Reps</span>${[1,3,5,10].map(n=>`<button data-brp="reps" data-v="${n}" aria-pressed="${B.reps===n}">${n}</button>`).join("")}</span>
-        <span class="brp-goes">★ ${B.goes}</span><button class="brp-x" data-brp="close">Close</button></div>
+        <span style="flex:1"></span><button class="brp-x" data-brp="set" aria-pressed="${!!B.set}" aria-label="Settings">⚙︎ ${B.reps}×${B.mode==="hiss"?" "+spd()[1]:""}</button><span class="brp-goes">★ ${B.goes}</span><button class="brp-x" data-brp="close">Close</button></div>
+      ${B.set?`<div class="brp-set"><span class="brp-reps"><span>Reps per word</span>${[1,3,5,10].map(n=>`<button data-brp="reps" data-v="${n}" aria-pressed="${B.reps===n}">${n}</button>`).join("")}</span>
+        <span class="brp-reps"><span>Hold speed</span>${SPEEDS.map(([k,e,l])=>`<button data-brp="spd" data-v="${k}" aria-pressed="${spd()[0]===k}">${e} ${l}</button>`).join("")}</span></div>`:""}
+      <div class="brp-strip"><button class="brp-arw" data-brp="prev" ${B.i?"":"disabled"} aria-label="Previous word">‹</button><div class="brp-chips" id="brpChips">${B.list.map((x,i)=>{ const r=(B.res||{})[i]; const ok=r&&r.length?r.filter(v=>v===true).length:0;
+          return `<button class="brp-chip ${i===B.i?"cur":""} ${r&&r.length>=B.reps?"done":""}" data-brp="go" data-v="${i}" aria-current="${i===B.i}"><span>${pic(x.it.B)||"🔤"}</span>${E(x.it.B)}${r&&r.length?`<i>${ok}/${r.length}</i>`:""}</button>`; }).join("")}</div><button class="brp-arw" data-brp="next" ${B.i<B.list.length-1?"":"disabled"} aria-label="Next word">›</button></div>
       <div class="brp-prog" aria-hidden="true"><i style="width:${progPct()}%"></i><b>${B.fin?"🏆":"🏁"}</b></div>
       <div class="brp-main">${stageHTML()}${B.fin||B.reps<2?"":`<div class="brp-count"><span class="brp-dots">${dotsHTML()}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
-      <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-g">🔊 ${E(P.W)}</button><span style="flex:1"></span><button data-brp="again" class="brp-g">↻ Again</button><button data-brp="nq" class="brp-nq">Not quite</button><button data-brp="near" class="brp-nq nr">≈ Nearly</button><button data-brp="said" class="brp-ok">✓ Said it</button></div>
+      <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-ic" aria-label="Hear ${E(P.W)}">🔊</button><button data-brp="again" class="brp-ic" aria-label="Again">↻</button><span style="flex:1"></span>
+        <button data-brp="nq" class="brp-ans no"><i>·</i>Not quite</button><button data-brp="near" class="brp-ans nr"><i>≈</i>Nearly</button><button data-brp="said" class="brp-ans ok"><i>★</i>Said it!</button></div>
     </div>`;
     B.pop=false; if(B.cheer){ const st=document.getElementById("brpStage"); if(st){ const c=document.createElement("div"); c.className="brp-cheer"; c.textContent=B.cheer; st.appendChild(c); setTimeout(()=>c.remove(),1800); } B.cheer=""; }
+    const cc=document.querySelector("#brpChips .cur"); if(cc) cc.scrollIntoView({block:"nearest",inline:"center"});
     bind(); }
   function dotsHTML(){ const M={ok:["on","★"],near:["nr","≈"],no:["nq","·"]}; return Array.from({length:B.reps},(_,k)=>{ const v=(B.m||[])[k], m=k<B.r?M[v===true?"ok":v==="near"?"near":"no"]:null; return `<i class="${m?m[0]:""} ${k===B.r-1&&B.pop?"new":""}">${m?m[1]:""}</i>`; }).join(""); }
   function progPct(){ const s0=Math.min(B.s0||0,B.i), tot=(B.list.length-s0)*B.reps; return B.fin?100:Math.min(100,Math.round(((B.i-s0)*B.reps+B.r)/tot*100)); }
@@ -3652,7 +3666,7 @@ async function loadExample(){
       if(path){ path.style.strokeDasharray=L; path.style.strokeDashoffset=L; }
       const paint=()=>{ if(!path) return; const l=L*w/100; path.style.strokeDashoffset=L-l; const pt=path.getPointAtLength(Math.max(.1,l)); head.style.left=(pt.x/10)+"%"; head.style.top=(pt.y/4)+"%"; };
       const stretch=()=>{ lab.textContent=(P.hold??canHiss(P.A))?P.A+ch.repeat(Math.round(w/(ch.length>1?14:10))):P.A+" "+"·".repeat(Math.round(w/12)); };
-      const start=e=>{ e.preventDefault(); if(B.done) return; cancelAnimationFrame(t); t=null; w=0; paint(); const s0=document.getElementById("brpSay"); if(s0) s0.textContent=""; h.classList.add("on"); let last=performance.now(); const step=now=>{ if(!t) return; w=Math.min(w+(now-last)*0.026,92); last=now; paint(); stretch(); t=requestAnimationFrame(step); }; t=requestAnimationFrame(step); };
+      const start=e=>{ e.preventDefault(); if(B.done) return; cancelAnimationFrame(t); t=null; w=0; paint(); const s0=document.getElementById("brpSay"); if(s0) s0.textContent=""; h.classList.add("on"); let last=performance.now(); const step=now=>{ if(!t) return; w=Math.min(w+(now-last)*spd()[3],92); last=now; paint(); stretch(); t=requestAnimationFrame(step); }; t=requestAnimationFrame(step); };
       const end=()=>{ if(!t) return; cancelAnimationFrame(t); t=null; h.classList.remove("on"); const s=document.getElementById("brpSay");
         if(w<25){ if(s) s.textContent="Hold a bit longer!"; w=0; paint(); lab.textContent=P.A; return; }
         const b=document.getElementById("brpB"); if(b) b.classList.remove("dim");
@@ -3668,10 +3682,13 @@ async function loadExample(){
     if(a==="prev"){ B.i=Math.max(0,B.i-1); B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
     if(a==="next"){ B.i=Math.min(B.list.length-1,B.i+1); B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
     if(a==="reps"){ B.reps=+v; B.r=Math.min(B.r,B.reps-1<0?0:B.r); if(B.r>=B.reps){ B.r=0; B.m=[]; } try{ S.client.brReps=B.reps; scheduleSave(); }catch(e){} draw(); return; }
-    if(a==="restart"){ B.i=0; B.s0=0; B.m=[]; B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
-    if(a==="again"){ B.tw=(B.tw||0)+1; reset(); draw(); return; }
+    if(a==="go"){ B.i=+v; B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
+    if(a==="set"){ B.set=!B.set; draw(); return; }
+    if(a==="spd"){ B.spd=v; try{ S.client.brSpd=v; scheduleSave(); }catch(e){} draw(); return; }
+    if(a==="restart"){ B.res={}; B.i=0; B.s0=0; B.m=[]; B.r=0; B.m=[]; B.fin=false; reset(); draw(); return; }
+    if(a==="again"){ reset(); draw(); return; }
     if(a==="hear"){ say(parts(cur().it).W); return; }
-    if(a==="said"||a==="nq"||a==="near"){ const ok=a==="said", {it}=cur(); try{ ok?(it.said&&it.said()):a==="near"?(it.near&&it.near()):(it.miss&&it.miss()); }catch(e){} B.goes++; (B.m ||= []).push(ok?true:a==="near"?"near":false); B.r++; B.pop=true; reset();
+    if(a==="said"||a==="nq"||a==="near"){ const ok=a==="said", {it}=cur(); try{ ok?(it.said&&it.said()):a==="near"?(it.near&&it.near()):(it.miss&&it.miss()); }catch(e){} B.goes++; const rv=ok?true:a==="near"?"near":false; (B.m ||= []).push(rv); ((B.res ||= {})[B.i] ||= []).push(rv); B.r++; B.pop=true; reset();
       const ms={10:"10 tries! 🔥",25:"25 tries! 🚀",50:"50 tries! 🌟",75:"75! Unstoppable 💪",100:"100 tries! 🏆"};
       if(B.r>=B.reps){ B.r=0; B.m=[]; if(B.i<B.list.length-1){ B.i++; B.cheer=ms[B.goes]||(B.reps>1?"Word done! ⭐":""); } else { B.fin=true; } }
       else B.cheer=ms[B.goes]||(ok?"":a==="near"?"So close! ≈":"Good try! Again 💪");
@@ -3682,7 +3699,7 @@ async function loadExample(){
   }
   function close(){ const o=document.getElementById("brp"); if(o) o.remove(); B=null; document.documentElement.style.overflow=""; try{ renderMain(); }catch(e){} }
   window.brOpenList=function(list,start){ if(!list||!list.length){ try{ toast("No words to bridge yet."); }catch(e){} return; }
-    let rp=5; try{ rp=S.client.brReps||5; }catch(e){} B={list:list.map(it=>({it})),i:Math.max(0,start||0),mode:lastMode,goes:0,reps:rp,s0:Math.max(0,start||0),r:0,fin:false,cheer:""}; reset();
+    let rp=5, sp="mid"; try{ rp=S.client.brReps||5; sp=S.client.brSpd||"mid"; }catch(e){} B={list:list.map(it=>({it})),i:Math.max(0,start||0),mode:lastMode,goes:0,reps:rp,spd:sp,res:{},s0:Math.max(0,start||0),r:0,fin:false,cheer:""}; reset();
     let o=document.getElementById("brp"); if(!o){ o=document.createElement("div"); o.id="brp"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true"); o.setAttribute("aria-label","Bridge it practice"); document.body.appendChild(o); }
     document.documentElement.style.overflow="hidden"; draw(); };
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && document.getElementById("brp")) close(); });
