@@ -459,7 +459,8 @@ details.stage summary::-webkit-details-marker{display:none}
 .brp-trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.brp-trail path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .brp-trail .bg{stroke:#eef3ee;stroke-width:26;stroke-dasharray:2 16}.brp-trail .fg{stroke:#8cc9a5;stroke-width:24}
 .brp-head{position:absolute;transform:translate(-50%,-50%);font-size:clamp(30px,4.6vw,44px);line-height:1;transition:none;z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
-.brp-head.gone,.brp-trail.gone{opacity:0;transition:opacity .35s}
+.brp-head.gone,.brp-trail.gone{opacity:0;transition:opacity .3s ease}.brp-piece.catch{animation:brpcatch .26s ease}@keyframes brpcatch{50%{transform:scale(1.12)}}
+.brp-dots.mini{gap:4px}.brp-dots.mini i{width:15px;height:15px;font-size:9px;border-width:1.5px}.brp-dots.mini i.nq{font-size:13px}
 .brp-reps{display:flex;align-items:center;gap:3px;background:#efe8dc;border-radius:12px;padding:3px;font-size:12px;color:#857a6e}.brp-reps span{padding:0 4px}
 .brp-reps button{border:0;background:transparent;border-radius:9px;padding:5px 9px;font-size:13px;font-weight:700;color:#6b5f55;cursor:pointer}.brp-reps button[aria-pressed=true]{background:#fff;color:#2a2116;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .brp-prog{height:8px;background:#efe8dc;position:relative}.brp-prog i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#f2b632,#e0803c);border-radius:0 6px 6px 0;transition:width .5s cubic-bezier(.3,1.2,.5,1)}.brp-prog b{position:absolute;right:6px;top:-9px;font-size:18px}
@@ -3585,8 +3586,8 @@ async function loadExample(){
     for(let k=0;k<20;k++){ const e=document.createElement("i"), a=Math.random()*6.28, d=40+Math.random()*70; e.style.setProperty("--x",(Math.cos(a)*d).toFixed(0)+"px"); e.style.setProperty("--y",(Math.sin(a)*d).toFixed(0)+"px"); e.style.background=cs[k%5]; b.appendChild(e); } host.appendChild(b); setTimeout(()=>b.remove(),900); }
   function say(t){ try{ const u=new SpeechSynthesisUtterance(t); const v=speechSynthesis.getVoices().find(x=>x.lang==="en-AU"); if(v) u.voice=v; u.lang="en-AU"; u.rate=.8; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }
   const cur=()=>B.list[B.i];
-  const TRAILS=[["zig","🐝"],["wave","🐍"],["twirl","🦋"]];
-  function trail(){ const [k,h]=TRAILS[(B.i+(B.tw||0))%3]; let pts=[];
+  const TRAILS=[["zig","🐝"],["wave","🐍"]];
+  function trail(){ const [k,h]=TRAILS[(B.i+(B.tw||0))%2]; let pts=[];
     if(k==="zig"){ for(let i=0;i<=10;i++) pts.push([40+i*70, i===0?230:(i%2?160:300)]); pts[10][1]=230; }
     else if(k==="wave"){ for(let i=0;i<=140;i++){ const t=i/140; pts.push([40+t*700, 230-70*Math.sin(t*Math.PI*6)*Math.min(1,t*6,(1-t)*6)]); } }
     else { for(let i=0;i<=220;i++){ const t=i/220, a=t*Math.PI*2*5; const r=55*Math.min(1,t*8,(1-t)*8); pts.push([40+t*700-r*Math.sin(a), 230-r*(1-Math.cos(a))*0.9]); } }
@@ -3619,9 +3620,10 @@ async function loadExample(){
       <div class="brp-top"><b>Bridge it</b><span class="brp-seg">${[["slide","Slide it in"],["hiss","Hold the sound"],["stones","Stepping stones"]].map(([v,l])=>`<button data-brp="mode" data-v="${v}" aria-pressed="${B.mode===v}">${l}</button>`).join("")}</span>
         <span class="brp-nav"><button data-brp="prev" ${B.i?"":"disabled"} aria-label="Previous">‹</button><span>${B.i+1}/${B.list.length}</span><button data-brp="next" ${B.i<B.list.length-1?"":"disabled"} aria-label="Next">›</button></span>
         <span class="brp-reps" title="Tries per word"><span>Reps</span>${[1,3,5,10].map(n=>`<button data-brp="reps" data-v="${n}" aria-pressed="${B.reps===n}">${n}</button>`).join("")}</span>
+        ${B.fin||B.reps<2?"":`<span class="brp-dots mini" title="${B.r} of ${B.reps} for this word">${Array.from({length:B.reps},(_,k)=>`<i class="${k<B.r?((B.m||[])[k]===false?"nq":"on"):""} ${k===B.r-1&&B.pop?"new":""}">${k<B.r?((B.m||[])[k]===false?"·":"★"):""}</i>`).join("")}</span>`}
         <span class="brp-goes">★ ${B.goes}</span><button class="brp-x" data-brp="close">Close</button></div>
       <div class="brp-prog" aria-hidden="true"><i style="width:${progPct()}%"></i><b>${B.fin?"🏆":"🏁"}</b></div>
-      <div class="brp-main">${stageHTML()}${B.fin||B.reps<2?"":`<div class="brp-count"><span class="brp-dots">${Array.from({length:B.reps},(_,k)=>`<i class="${k<B.r?((B.m||[])[k]===false?"nq":"on"):""} ${k===B.r-1&&B.pop?"new":""}">${k<B.r?((B.m||[])[k]===false?"·":"★"):""}</i>`).join("")}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
+      <div class="brp-main">${stageHTML()}${""}${B.fin||B.reps<2?"":`<div class="brp-count" hidden><span class="brp-dots">${Array.from({length:B.reps},(_,k)=>`<i class="${k<B.r?((B.m||[])[k]===false?"nq":"on"):""} ${k===B.r-1&&B.pop?"new":""}">${k<B.r?((B.m||[])[k]===false?"·":"★"):""}</i>`).join("")}</span><span>${B.r} of ${B.reps}</span></div>`}${P.alts?`<div class="brp-alts"><span>VC word:</span>${P.alts.map(a=>`<button data-brp="alt" data-v="${E(a)}" aria-pressed="${a===P.A}">${E(a)}</button>`).join("")}<input class="brp-own" id="brpOwn" placeholder="+ your own" aria-label="Your own VC word"></div>`:""}</div>
       <div class="brp-foot ${B.done&&!B.fin?"show":""}"><button data-brp="hear" class="brp-g">🔊 ${E(P.W)}</button><span style="flex:1"></span><button data-brp="again" class="brp-g">↻ Again</button><button data-brp="nq" class="brp-nq">Not quite</button><button data-brp="said" class="brp-ok">✓ Said it</button></div>
     </div>`;
     B.pop=false; if(B.cheer){ const st=document.getElementById("brpStage"); if(st){ const c=document.createElement("div"); c.className="brp-cheer"; c.textContent=B.cheer; st.appendChild(c); setTimeout(()=>c.remove(),1800); } B.cheer=""; }
@@ -3650,13 +3652,14 @@ async function loadExample(){
       const path=document.getElementById("brpPath"), head=document.getElementById("brpHead"), L=path?path.getTotalLength():1;
       if(path){ path.style.strokeDasharray=L; path.style.strokeDashoffset=L; }
       const paint=()=>{ if(!path) return; const l=L*w/100; path.style.strokeDashoffset=L-l; const pt=path.getPointAtLength(Math.max(.1,l)); head.style.left=(pt.x/10)+"%"; head.style.top=(pt.y/4)+"%"; };
-      const start=e=>{ e.preventDefault(); if(B.done) return; clearInterval(t); w=0; paint(); const s0=document.getElementById("brpSay"); if(s0) s0.textContent=""; t=setInterval(()=>{ w=Math.min(w+1.6,92); paint(); lab.textContent=(P.hold??canHiss(P.A))?P.A+ch.repeat(Math.round(w/(ch.length>1?14:10))):P.A+" "+"·".repeat(Math.round(w/12)); h.classList.add("on"); },60); };
-      const end=()=>{ if(!t) return; clearInterval(t); t=null; h.classList.remove("on"); const s=document.getElementById("brpSay");
+      const stretch=()=>{ lab.textContent=(P.hold??canHiss(P.A))?P.A+ch.repeat(Math.round(w/(ch.length>1?14:10))):P.A+" "+"·".repeat(Math.round(w/12)); };
+      const start=e=>{ e.preventDefault(); if(B.done) return; cancelAnimationFrame(t); t=null; w=0; paint(); const s0=document.getElementById("brpSay"); if(s0) s0.textContent=""; h.classList.add("on"); let last=performance.now(); const step=now=>{ if(!t) return; w=Math.min(w+(now-last)*0.026,92); last=now; paint(); stretch(); t=requestAnimationFrame(step); }; t=requestAnimationFrame(step); };
+      const end=()=>{ if(!t) return; cancelAnimationFrame(t); t=null; h.classList.remove("on"); const s=document.getElementById("brpSay");
         if(w<25){ if(s) s.textContent="Hold a bit longer!"; w=0; paint(); lab.textContent=P.A; return; }
         const b=document.getElementById("brpB"); if(b) b.classList.remove("dim");
         zipEnd(); };
-      const stretch=()=>{ lab.textContent=(P.hold??canHiss(P.A))?P.A+ch.repeat(Math.round(w/(ch.length>1?14:10))):P.A+" "+"·".repeat(Math.round(w/12)); };
-      const zipEnd=()=>{ const b=document.getElementById("brpB"); if(b) b.classList.remove("dim"); const zip=setInterval(()=>{ w=Math.min(100,w+6); paint(); if(w>=100){ clearInterval(zip); head.classList.add("gone"); setTimeout(finish,200); } },16); };
+      const zipEnd=()=>{ const b=document.getElementById("brpB"); if(b) b.classList.remove("dim"); const w0=w, t0=performance.now(), D=320;
+        const go=now=>{ const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3); w=w0+(100-w0)*e; paint(); if(k<1) requestAnimationFrame(go); else { if(b) b.classList.add("catch"); head.classList.add("gone"); setTimeout(finish,260); } }; requestAnimationFrame(go); };
       h.addEventListener("contextmenu",e=>e.preventDefault()); h.addEventListener("selectstart",e=>e.preventDefault()); h.addEventListener("touchstart",e=>e.preventDefault(),{passive:false}); h.addEventListener("pointerdown",start); h.addEventListener("pointerup",end); h.addEventListener("pointerleave",end); h.addEventListener("pointercancel",end); }
   }
   function reset(){ B.done=false; B.step=-1; B.x=4; }
