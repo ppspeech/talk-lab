@@ -1050,10 +1050,6 @@ body{font-variant-numeric:tabular-nums}
 .hub-col .chartbox svg{min-width:0!important;width:100%}
 .tgt{background:var(--surface)!important;border-color:var(--line)!important}.tgt.no{background:var(--err-soft)!important;border-color:var(--err)!important}.tgt.em{background:var(--warn-soft)!important;border-color:var(--warn)!important}
 @media (max-width:479px){
-  #sec-goals .panel-h{flex-wrap:wrap}
-  #sec-goals .panel-h .cdsum{flex:1 0 100%;order:2}
-  #sec-goals .panel-h h2{flex:1 0 auto}
-  #sec-goals .panel-h .cdsum ~ .btn,#sec-goals .panel-h .cdsum ~ span{order:3}
 }
 @container (max-width:640px){ .fam{grid-template-columns:1fr!important} }
 @media (max-width:759px){
@@ -1107,6 +1103,19 @@ body{font-variant-numeric:tabular-nums}
   .sess-deck{position:sticky;top:calc(var(--hh) - 6px + env(safe-area-inset-top,0px));z-index:4;background:var(--bg);margin:0 -16px;padding:12px 16px 4px;max-height:52vh;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 6px 12px -10px rgba(27,34,43,.35)}
   .sess-deck .tgt-hd{margin-bottom:4px}
 }
+
+.jump{gap:4px 18px!important;margin:6px 2px 8px!important}
+.jump a{border:0!important;background:none!important;padding:6px 0!important;min-height:32px!important;font-weight:400!important;font-size:14px!important;color:var(--muted)!important;border-radius:0!important;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.jump a:hover{color:var(--ink)!important;text-decoration-color:var(--accent)}
+.cd-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.cd-id{flex:1 1 200px;min-width:0}
+.cd-name{font-size:22px!important;line-height:1.2;margin:0 0 4px;overflow-wrap:anywhere}
+.cd-meta{margin:0;font-size:16px;color:var(--muted);line-height:1.45}
+.cd-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#sec-goals .panel-h .cdsum{flex:initial}
+.course .lab{background:var(--surface-2)!important;border:0!important;font-family:var(--f-body)!important;font-weight:700;color:var(--muted);border-radius:8px!important}
+.course .slots{background:var(--surface-2)!important;border:1px dashed var(--line)!important;border-radius:8px!important}
+.course.has .slots,.course .slots:has(*){background:var(--surface)!important;border-style:solid!important}
 @media (prefers-reduced-motion:reduce){.tgt-card,.tab,.gcard{transition:none}.tgt-card.cur{transform:none}}
 </style>
 
@@ -1560,7 +1569,7 @@ function viewPlan(){
   const activeN=goals.filter(g=>g.active).length;
   return `
   <section class="panel">
-    <div class="panel-h"><h2>Client details</h2><span class="muted small cdsum">${esc([c.name, age(c.dob)?"Age "+age(c.dob):"", c.dx].filter(Boolean).join(" · "))}</span><button class="btn ghost small" data-act="cdtoggle">${S.ui?.cd?"Done":"Edit details"}</button>${S.confirm==="client"?`<span class="row small">Delete client and all sessions?<button class="btn danger small" data-act="delclient">Delete</button><button class="btn small" data-act="noconfirm">Cancel</button></span>`:`<button class="btn ghost small" data-act="ask" data-v="client">Delete client</button>`}</div>
+    <div class="panel-h cd-head"><div class="cd-id"><h2 class="cd-name">${esc(c.name||"Client")}</h2><p class="cd-meta">${[age(c.dob)?"Age "+esc(age(c.dob)):"", c.dx?esc(c.dx):""].filter(Boolean).join("<br>")||"Add age and diagnosis in Edit details"}</p></div><span class="cd-acts"><button class="btn small" data-act="cdtoggle">${S.ui?.cd?"Done":"Edit details"}</button>${S.confirm==="client"?`<span class="row small">Delete client and all sessions?<button class="btn danger small" data-act="delclient">Delete</button><button class="btn small" data-act="noconfirm">Cancel</button></span>`:`<button class="btn ghost small" data-act="ask" data-v="client">Delete client</button>`}</span></div>
     <div class="grid2" ${S.ui?.cd?"":"hidden"}>
       <label class="f">Name or ID<input type="text" data-in="name" value="${esc(c.name)}"></label>
       <label class="f">Date of birth<input type="date" data-in="dob" value="${esc(c.dob)}"></label>
