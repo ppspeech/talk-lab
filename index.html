@@ -1095,6 +1095,18 @@ body{font-variant-numeric:tabular-nums}
 .tgt-card .tgt-w .tadd{border-radius:999px;padding:4px 10px}
 .tgt-card .tgt-q{margin-top:8px}
 @media (max-width:759px){ .tgt-grid{align-items:flex-start} .tgt-card .tgt-w{max-height:none;overflow:visible!important} .tgt-add{min-height:0;align-self:stretch} }
+
+.tc-btn{margin-left:auto;border:1px solid var(--line)!important;background:var(--surface)!important;border-radius:999px!important;padding:7px 14px!important;font-weight:700;color:var(--ink);min-height:36px}
+.panel.tgt.collapsed .tgt-card{width:auto!important;min-width:0}.panel.tgt.collapsed .tgt-card .tgt-h b{white-space:nowrap}.tgt-hd .tc-btn+.mm-btn{margin-left:0!important}
+.tc-n{display:none}
+.panel.tgt.collapsed .tgt-w,.panel.tgt.collapsed .tgt-q{display:none!important}
+.panel.tgt.collapsed .tc-n{display:inline}
+.panel.tgt.collapsed .tgt-card .tgt-h{margin-bottom:0}
+.panel.tgt.collapsed .tgt-card{padding-bottom:10px}
+@media (max-width:1023px){
+  .sess-deck{position:sticky;top:calc(var(--hh) - 6px + env(safe-area-inset-top,0px));z-index:4;background:var(--bg);margin:0 -16px;padding:12px 16px 4px;max-height:52vh;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 6px 12px -10px rgba(27,34,43,.35)}
+  .sess-deck .tgt-hd{margin-bottom:4px}
+}
 @media (prefers-reduced-motion:reduce){.tgt-card,.tab,.gcard{transition:none}.tgt-card.cur{transform:none}}
 </style>
 
@@ -1600,6 +1612,7 @@ function goalBuilder(g,gi){
 }
 
 /* Today's targets: the live plan, editable mid-session */
+function wordsHidden(){ try{ return localStorage.getItem("tl-words-hidden")==="1"; }catch(e){ return false; } }
 function wordBank(g){
   const sh=S.ui?.wsh||"all", f={...(g.filter||{})}; delete f.shape; if(sh!=="all") f.shape=sh;
   const rk=w=>{ const i=EARLY.indexOf(w); return (picOf(w)?0:2000)+(i<0?1000:i); };
@@ -1623,10 +1636,10 @@ function targetsPanel(){
   const act=goals.map((g,gi)=>({g,gi})).filter(x=>x.g.stimuli.some(w=>w.trim())||x.g.active);
   if(!open){ const on=act.filter(x=>x.g.active);
     return `<button class="tgt-strip" data-act="tgttoggle"><span class="eyebrow">Today's targets</span>${on.map(x=>`<span class="tgt-mini" style="--gc:var(--g${x.gi+1})">${esc(x.g.target||"Goal "+(x.gi+1))}</span>`).join("")}<span class="tgt-open">Change ▾</span></button>`; }
-  return `<section class="panel tgt" style="padding:8px 12px 12px;gap:10px">
-    <div class="tgt-hd"><h2 class="tgt-title">Today</h2><button class="tb mm-btn" data-act="mmopen">Mouth map</button></div>
+  return `<section class="panel tgt ${wordsHidden()?"collapsed":""}" style="padding:8px 12px 12px;gap:10px">
+    <div class="tgt-hd"><h2 class="tgt-title">Today</h2><button class="tb tc-btn" data-act="tcollapse" aria-expanded="${!wordsHidden()}">${wordsHidden()?"Show words":"Hide words"}</button><button class="tb mm-btn" data-act="mmopen">Mouth map</button></div>
     <div class="tgt-grid">${act.map(({g,gi})=>`<div class="tgt-card ${g.active?"":"off"} ${curG===g?"cur":""}" style="--gc:var(--g${gi+1})">
-      <div class="tgt-h"><button class="tsw ${g.active?"on":""}" data-act="tactive" data-g="${gi}" aria-pressed="${!!g.active}" aria-label="Practise this goal today"></button><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="muted small">Stage ${g.stage}</span><button class="tw-btn ${S.ui?.wt===gi?"on":""}" data-act="twords" data-g="${gi}" aria-expanded="${S.ui?.wt===gi}" aria-label="Pick words for ${esc(g.target||"this goal")}">${IC.note}<span>Words</span></button></div>
+      <div class="tgt-h"><button class="tsw ${g.active?"on":""}" data-act="tactive" data-g="${gi}" aria-pressed="${!!g.active}" aria-label="Practise this goal today"></button><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="muted small">Stage ${g.stage}</span><span class="tc-n muted small">${g.stimuli.filter(w=>w.trim()).length} words</span><button class="tw-btn ${S.ui?.wt===gi?"on":""}" data-act="twords" data-g="${gi}" aria-expanded="${S.ui?.wt===gi}" aria-label="Pick words for ${esc(g.target||"this goal")}">${IC.note}<span>Words</span></button></div>
       <div class="tgt-w">${g.stimuli.map((w,si)=>w.trim()?`<span>${picOf(w)?picOf(w)+" ":""}${esc(w)}<button data-act="tdel" data-g="${gi}" data-s="${si}" aria-label="Remove ${esc(w)}">⨯</button></span>`:"").join("")}${g.stimuli.some(w=>!w.trim())&&S.ui?.wt!==gi?`<input class="tadd" data-in="tadd" data-g="${gi}" placeholder="+ word" aria-label="Add a word">`:""}</div>
       <div class="tgt-q"><span class="muted small">Refill:</span>${QSETS.map(([v])=>`<button class="${g.filter?.shape===v?"on":""}" data-act="qshape" data-g="${gi}" data-v="${v}">${v}</button>`).join("")}</div>
     </div>`).join("")}
@@ -3548,6 +3561,7 @@ document.addEventListener("click", async e=>{
     g.autoFill=false; scheduleSave(); renderMain(); return; }
   if(a==="tgttoggle"){ S.ui=S.ui||{}; const L=ensureLive(); S.ui.tgt=!(S.ui.tgt ?? (seqOf(L).length===0)); renderMain(); return; }
   if(a==="tactive"){ const g=S.client.goals[+b.dataset.g]; g.active=!g.active; if(!sessionGoals().length){ g.active=true; toast("Keep at least one goal on."); } const L=ensureLive(); if(L.cur && !sessionGoals().some(x=>x.id===L.cur.gid)) L.cur=null; scheduleSave(); saveLive(); renderMain(); return; }
+  if(a==="tcollapse"){ try{ localStorage.setItem("tl-words-hidden", wordsHidden()?"0":"1"); }catch(e){} renderMain(); return; }
   if(a==="twords"){ S.ui=S.ui||{}; const gi=+b.dataset.g; S.ui.wt = S.ui.wt===gi ? null : gi; renderMain(); if(S.ui.wt!=null) requestAnimationFrame(()=>document.querySelector(".wtray")?.scrollIntoView({block:"nearest",behavior:"smooth"})); return; }
   if(a==="wshape"){ S.ui.wsh=b.dataset.v; renderMain(); return; }
   if(a==="wtog"||a==="wshuf"||a==="wclear"){ const g=S.client.goals[S.ui.wt]; if(!g) return; const L=ensureLive();
