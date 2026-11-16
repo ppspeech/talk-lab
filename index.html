@@ -1047,6 +1047,14 @@ body{font-variant-numeric:tabular-nums}
 .gm-mods.icons button .ic{width:20px;height:20px}
 .hub-col{container-type:inline-size}
 .hub-col svg{max-width:100%;height:auto}
+.hub-col .chartbox svg{min-width:0!important;width:100%}
+.tgt{background:var(--surface)!important;border-color:var(--line)!important}.tgt.no{background:var(--err-soft)!important;border-color:var(--err)!important}.tgt.em{background:var(--warn-soft)!important;border-color:var(--warn)!important}
+@media (max-width:479px){
+  #sec-goals .panel-h{flex-wrap:wrap}
+  #sec-goals .panel-h .cdsum{flex:1 0 100%;order:2}
+  #sec-goals .panel-h h2{flex:1 0 auto}
+  #sec-goals .panel-h .cdsum ~ .btn,#sec-goals .panel-h .cdsum ~ span{order:3}
+}
 @container (max-width:640px){ .fam{grid-template-columns:1fr!important} }
 @media (max-width:759px){
   .gm-mini .gm-acts{flex-wrap:wrap!important;overflow:visible!important}
