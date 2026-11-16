@@ -1069,6 +1069,22 @@ body{font-variant-numeric:tabular-nums}
   #sec-history td{padding:2px 0!important;border:0!important}
 }
 @media (max-width:479px){ .goal-h h3{flex:1 0 calc(100% - 24px);margin:0} }
+
+.tw-btn{margin-left:auto;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 8px;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;min-height:32px}
+.tw-btn .ic{width:15px;height:15px}.tw-btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tgt-h .muted.small{margin-left:0}
+.wtray{margin-top:4px;background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--gc);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.wt-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.wt-n{margin-left:auto}
+.wt-sh{display:inline-flex;gap:4px;flex-wrap:wrap}
+.wt-sh button{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;min-height:32px;color:var(--ink)}
+.wt-sh button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.wt-bank{display:flex;flex-wrap:wrap;gap:6px;max-height:min(260px,40vh);overflow-y:auto;overscroll-behavior:contain}
+.wt-w{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font:inherit;font-size:15px;cursor:pointer;min-height:38px;color:var(--ink)}
+.wt-w.on{background:color-mix(in srgb,var(--gc) 16%,var(--surface));border-color:var(--gc);font-weight:700}
+.wt-foot{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.wt-foot .tadd{flex:1 1 160px;min-width:0;font-size:16px;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.tgt-card .tgt-w{flex-wrap:wrap!important;overflow:visible!important}
+.tgt-card .tgt-w span{user-select:none;-webkit-user-select:none}
+@media (max-width:759px){ .tgt-card{width:min(320px,84vw)!important;max-width:84vw!important} .tgt-card .tgt-w{max-height:76px;overflow:hidden!important} }
 @media (prefers-reduced-motion:reduce){.tgt-card,.tab,.gcard{transition:none}.tgt-card.cur{transform:none}}
 </style>
 
@@ -1574,6 +1590,23 @@ function goalBuilder(g,gi){
 }
 
 /* Today's targets: the live plan, editable mid-session */
+function wordBank(g){
+  const sh=S.ui?.wsh||"all", f={...(g.filter||{})}; delete f.shape; if(sh!=="all") f.shape=sh;
+  const rk=w=>{ const i=EARLY.indexOf(w); return (picOf(w)?0:2000)+(i<0?1000:i); };
+  let list=[]; try{ list=bankMatches(f, f.only?allowedSet():null).map(b=>b.w); }catch(e){}
+  list=[...new Set(list)].sort((a,b)=>rk(a)-rk(b)).slice(0,48);
+  g.stimuli.forEach(w=>{ if(w.trim() && !list.includes(w)) list.unshift(w); });
+  return list;
+}
+function wordTray(){
+  const gi=S.ui?.wt; if(gi==null) return ""; const g=S.client.goals[gi]; if(!g) return "";
+  const sh=S.ui.wsh||"all", picked=new Set(g.stimuli.filter(w=>w.trim())), list=wordBank(g);
+  return `<div class="wtray" style="--gc:var(--g${gi+1})" role="region" aria-label="Pick words">
+    <div class="wt-top"><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="wt-sh" role="group" aria-label="Word shape">${["all",...QSETS.map(q=>q[0])].map(v=>`<button class="${sh===v?"on":""}" data-act="wshape" data-v="${v}" aria-pressed="${sh===v}">${v==="all"?"All":v}</button>`).join("")}</span><span class="muted small wt-n">${picked.size} of ${NSTIM} picked</span></div>
+    <div class="wt-bank">${list.length?list.map(w=>`<button class="wt-w ${picked.has(w)?"on":""}" data-act="wtog" data-w="${esc(w)}" aria-pressed="${picked.has(w)}">${picOf(w)?`<span aria-hidden="true">${picOf(w)}</span>`:""}${esc(w)}</button>`).join(""):`<span class="muted small">No bank words for this shape. Type your own below.</span>`}</div>
+    <div class="wt-foot">${picked.size<NSTIM?`<input class="tadd" data-in="tadd" data-g="${gi}" placeholder="Type your own word" aria-label="Add your own word">`:`<span class="muted small">Full: tap a word to swap it out.</span>`}<button class="btn small" data-act="wshuf">Shuffle 5</button><button class="btn small ghost" data-act="wclear">Clear</button><button class="btn small primary" data-act="twords" data-g="${gi}">Done</button></div>
+  </div>`;
+}
 function targetsPanel(){
   const goals=S.client.goals||[], L=ensureLive(), tries=seqOf(L).length;
   const open = true; let curG=null; try{ curG=(fxCurrent()||{}).g||null; }catch(e){}
@@ -1583,11 +1616,12 @@ function targetsPanel(){
   return `<section class="panel tgt" style="padding:8px 12px 12px;gap:10px">
     <div class="tgt-hd"><h2 class="tgt-title">Today</h2><button class="tb mm-btn" data-act="mmopen">Mouth map</button></div>
     <div class="tgt-grid">${act.map(({g,gi})=>`<div class="tgt-card ${g.active?"":"off"} ${curG===g?"cur":""}" style="--gc:var(--g${gi+1})">
-      <div class="tgt-h"><button class="tsw ${g.active?"on":""}" data-act="tactive" data-g="${gi}" aria-pressed="${!!g.active}" aria-label="Practise this goal today"></button><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="muted small">Stage ${g.stage}</span></div>
-      <div class="tgt-w">${g.stimuli.map((w,si)=>w.trim()?`<span>${picOf(w)?picOf(w)+" ":""}${esc(w)}<button data-act="tdel" data-g="${gi}" data-s="${si}" aria-label="Remove ${esc(w)}">⨯</button></span>`:"").join("")}${g.stimuli.some(w=>!w.trim())?`<input class="tadd" data-in="tadd" data-g="${gi}" placeholder="+ word" aria-label="Add a word">`:""}</div>
+      <div class="tgt-h"><button class="tsw ${g.active?"on":""}" data-act="tactive" data-g="${gi}" aria-pressed="${!!g.active}" aria-label="Practise this goal today"></button><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="muted small">Stage ${g.stage}</span><button class="tw-btn ${S.ui?.wt===gi?"on":""}" data-act="twords" data-g="${gi}" aria-expanded="${S.ui?.wt===gi}" aria-label="Pick words for ${esc(g.target||"this goal")}">${IC.note}<span>Words</span></button></div>
+      <div class="tgt-w">${g.stimuli.map((w,si)=>w.trim()?`<span>${picOf(w)?picOf(w)+" ":""}${esc(w)}<button data-act="tdel" data-g="${gi}" data-s="${si}" aria-label="Remove ${esc(w)}">⨯</button></span>`:"").join("")}${g.stimuli.some(w=>!w.trim())&&S.ui?.wt!==gi?`<input class="tadd" data-in="tadd" data-g="${gi}" placeholder="+ word" aria-label="Add a word">`:""}</div>
       <div class="tgt-q"><span class="muted small">Refill:</span>${QSETS.map(([v])=>`<button class="${g.filter?.shape===v?"on":""}" data-act="qshape" data-g="${gi}" data-v="${v}">${v}</button>`).join("")}</div>
     </div>`).join("")}
     ${goals.length<4?`<button class="tgt-add" data-act="tgoal">+ New goal</button>`:""}</div>
+    ${wordTray()}
   </section>`;
 }
 function viewSession(){
@@ -3504,6 +3538,15 @@ document.addEventListener("click", async e=>{
     g.autoFill=false; scheduleSave(); renderMain(); return; }
   if(a==="tgttoggle"){ S.ui=S.ui||{}; const L=ensureLive(); S.ui.tgt=!(S.ui.tgt ?? (seqOf(L).length===0)); renderMain(); return; }
   if(a==="tactive"){ const g=S.client.goals[+b.dataset.g]; g.active=!g.active; if(!sessionGoals().length){ g.active=true; toast("Keep at least one goal on."); } const L=ensureLive(); if(L.cur && !sessionGoals().some(x=>x.id===L.cur.gid)) L.cur=null; scheduleSave(); saveLive(); renderMain(); return; }
+  if(a==="twords"){ S.ui=S.ui||{}; const gi=+b.dataset.g; S.ui.wt = S.ui.wt===gi ? null : gi; renderMain(); if(S.ui.wt!=null) requestAnimationFrame(()=>document.querySelector(".wtray")?.scrollIntoView({block:"nearest",behavior:"smooth"})); return; }
+  if(a==="wshape"){ S.ui.wsh=b.dataset.v; renderMain(); return; }
+  if(a==="wtog"||a==="wshuf"||a==="wclear"){ const g=S.client.goals[S.ui.wt]; if(!g) return; const L=ensureLive();
+    if(a==="wtog"){ const w=b.dataset.w, i=g.stimuli.indexOf(w);
+      if(i>=0){ g.stimuli[i]=""; if(L.cur && L.cur.gid===g.id && L.cur.si===i) L.cur=null; }
+      else { const e=g.stimuli.findIndex(x=>!x.trim()); if(e<0){ toast(NSTIM+" words max. Tap one to drop it first."); return; } g.stimuli[e]=w; } }
+    if(a==="wshuf"){ const pool=wordBank(g).slice(); for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; } g.stimuli=pad(pool.slice(0,5),""); if(L.cur && L.cur.gid===g.id) L.cur=null; }
+    if(a==="wclear"){ g.stimuli=pad([],""); if(L.cur && L.cur.gid===g.id) L.cur=null; }
+    g.autoFill=false; scheduleSave(); saveLive(); renderMain(); return; }
   if(a==="tdel"){ const g=S.client.goals[+b.dataset.g], si=+b.dataset.s; g.stimuli[si]=""; const L=ensureLive(); if(L.cur && L.cur.gid===g.id && L.cur.si===si) L.cur=null; scheduleSave(); saveLive(); renderMain(); return; }
   if(a==="tgoal"){ S.tab="plan"; S.client.goals.push(blankGoal()); S.ui=S.ui||{}; S.ui.gopen=S.client.goals.length-1; scheduleSave(); renderMain(); return; }
   if(a==="cdtoggle"){ S.ui=S.ui||{}; S.ui.cd=!S.ui.cd; renderMain(); return; }
