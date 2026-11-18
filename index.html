@@ -1116,6 +1116,11 @@ body{font-variant-numeric:tabular-nums}
 .course .lab{background:var(--surface-2)!important;border:0!important;font-family:var(--f-body)!important;font-weight:700;color:var(--muted);border-radius:8px!important}
 .course .slots{background:var(--surface-2)!important;border:1px dashed var(--line)!important;border-radius:8px!important}
 .course.has .slots,.course .slots:has(*){background:var(--surface)!important;border-style:solid!important}
+
+.panel.tgt.collapsed .tgt-card .tgt-h b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.tgt-card .tgt-h b{min-width:0}
+.tgt-h>.muted.small{white-space:nowrap}
+@media (min-width:1024px){ .sess-deck .tgt-grid{min-width:0;width:100%;align-self:stretch} .sess-deck .tgt-card{min-width:0} .sess-deck .tw-btn span,.sess-deck .tc-n{display:none!important} .sess-deck .tw-btn{padding:4px 7px} .sess-deck .tgt-grid{overflow:visible!important} .sess-deck .tgt-card,.panel.tgt.collapsed .tgt-card{width:auto!important;max-width:100%!important} .sess-deck{overflow-x:hidden} }
 @media (prefers-reduced-motion:reduce){.tgt-card,.tab,.gcard{transition:none}.tgt-card.cur{transform:none}}
 </style>
 
@@ -1646,7 +1651,7 @@ function targetsPanel(){
   if(!open){ const on=act.filter(x=>x.g.active);
     return `<button class="tgt-strip" data-act="tgttoggle"><span class="eyebrow">Today's targets</span>${on.map(x=>`<span class="tgt-mini" style="--gc:var(--g${x.gi+1})">${esc(x.g.target||"Goal "+(x.gi+1))}</span>`).join("")}<span class="tgt-open">Change ▾</span></button>`; }
   return `<section class="panel tgt ${wordsHidden()?"collapsed":""}" style="padding:8px 12px 12px;gap:10px">
-    <div class="tgt-hd"><h2 class="tgt-title">Today</h2><button class="tb tc-btn" data-act="tcollapse" aria-expanded="${!wordsHidden()}">${wordsHidden()?"Show words":"Hide words"}</button><button class="tb mm-btn" data-act="mmopen">Mouth map</button></div>
+    <div class="tgt-hd"><h2 class="tgt-title">Today</h2><button class="tb tc-btn" data-act="tcollapse" aria-expanded="${!wordsHidden()}">${wordsHidden()?"Show words":"Hide words"}</button></div>
     <div class="tgt-grid">${act.map(({g,gi})=>`<div class="tgt-card ${g.active?"":"off"} ${curG===g?"cur":""}" style="--gc:var(--g${gi+1})">
       <div class="tgt-h"><button class="tsw ${g.active?"on":""}" data-act="tactive" data-g="${gi}" aria-pressed="${!!g.active}" aria-label="Practise this goal today"></button><b>${esc(g.target||"Goal "+(gi+1))}</b><span class="muted small">Stage ${g.stage}</span><span class="tc-n muted small">${g.stimuli.filter(w=>w.trim()).length} words</span><button class="tw-btn ${S.ui?.wt===gi?"on":""}" data-act="twords" data-g="${gi}" aria-expanded="${S.ui?.wt===gi}" aria-label="Pick words for ${esc(g.target||"this goal")}">${IC.note}<span>Words</span></button></div>
       <div class="tgt-w">${g.stimuli.map((w,si)=>w.trim()?`<span>${picOf(w)?picOf(w)+" ":""}${esc(w)}<button data-act="tdel" data-g="${gi}" data-s="${si}" aria-label="Remove ${esc(w)}">⨯</button></span>`:"").join("")}${g.stimuli.some(w=>!w.trim())&&S.ui?.wt!==gi?`<input class="tadd" data-in="tadd" data-g="${gi}" placeholder="+ word" aria-label="Add a word">`:""}</div>
